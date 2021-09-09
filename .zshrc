@@ -96,14 +96,25 @@ export TERM="xterm-256color"                      # getting proper colors
 export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
 export MANPATH="/usr/local/man:$MANPATH"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'" # "bat" as manpager
+export EDITOR="emacsclient -t -a ''"
+export ALTERNATEEDITOR="vi"
 
 ### alias ###
 alias less=bat
 alias find=fd
 alias grep=rg
-alias ping=prettyping # prettyping
+alias emax="emacsclient -t -a ''"
 alias config="/usr/bin/git --git-dir=$HOME/dotfiles --work-tree=$HOME" # bare git repo alias for dotfiles
-alias du="ncdu --color dark -rr -x --exclude .git --exclude node_modules" # ncdu
+alias rr='curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash' # the terminal rickroll
+alias tb="nc termbin.com 9999" # termbin, https://termbin.com/
+
+if [ ! -z $(command -v prettyping) ]; then
+  alias ping=prettyping # prettyping
+fi
+
+if [ ! -z $(command -v ncdu) ]; then
+  alias du="ncdu --color dark -rr -x --exclude .git --exclude node_modules" # ncdu
+fi
 
 ### extra 'sauce' ###
 [ -f $HOME/.cargo/env ] && source "$HOME/.cargo/env" # Rust (Cargo)
@@ -204,6 +215,12 @@ alias psa="ps auxf"
 alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
 alias psmem='ps auxf | sort -nr -k 4'
 alias pscpu='ps auxf | sort -nr -k 3'
+
+### gpg encryption ###
+# verify signature for isos
+alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
+# receive the key of a developer
+alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
 
 ### youtube-dl ###
 alias yta-aac="youtube-dl --extract-audio --audio-format aac "
