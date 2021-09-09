@@ -1,1 +1,9 @@
 #+TITLE: gty's dotfiles (configurations)
+
+* Configurations
+
++ [[https://github.com/macdavid313/dotfiles/blob/master/.config/starship.toml][starship.toml]]
+  - cross-shell prompt
++ [[https://github.com/macdavid313/dotfiles/blob/master/.zshrc][.zshrc]]
+  - Z shell
+  - [[https://ohmyz.sh/][Oh My Zsh]]
