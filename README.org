@@ -3,7 +3,13 @@
 * Configurations
 
 + [[https://github.com/macdavid313/dotfiles/blob/master/.config/starship.toml][starship.toml]]
-  - cross-shell prompt
+  - [[https://starship.rs/][cross-shell prompt]]
 + [[https://github.com/macdavid313/dotfiles/blob/master/.zshrc][.zshrc]]
-  - Z shell
+  - Z shell (do you mean the name came from =Zhong Shao=?)
   - [[https://ohmyz.sh/][Oh My Zsh]]
++ [[https://github.com/macdavid313/dotfiles/tree/master/.local/bin][.local/bin/]]
+  - clock
+  - kernel
+  - memory
+  - upt
+  - volume
