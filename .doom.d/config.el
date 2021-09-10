@@ -426,3 +426,7 @@ Version 2017-11-10"
       org-journal-date-prefix "#+TITLE: "
       org-journal-time-prefix "* "
       org-journal-file-format "%Y-%m-%d.org")
+
+;;;; elfeed
+(setq rmh-elfeed-org-files '("~/.config/org-elfeed.org"))
+(add-hook! 'elfeed-search-mode-hook 'elfeed-update)

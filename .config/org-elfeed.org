@@ -1,0 +1,9 @@
+#+TITLE: Org Feed
+
+* root :elfeed:
+** Programming :programming:
+*** [[https://this-week-in-rust.org/rss.xml][This Week in Rust]] :rust:
+** News :news:
+*** [[http://rss.slashdot.org/Slashdot/slashdotMain][Slashdot]] :slashdot:
+*** Infoq :infoq:
+***** https://feed.infoq.com/
