@@ -235,6 +235,11 @@ alias yta-wav="youtube-dl --extract-audio --audio-format wav "
 alias ytv-best="youtube-dl -f bestvideo+bestaudio "
 
 ### Common Lisp ###
-# TODO: unfinished configurations
-alias sbcl-repl="rlwrap sbcl --noinform --load $HOME/quicklisp/setup.lisp --eval '(require :sb-aclrepl)'"
-alias ecl-repl="rlwrap ecl --load $HOME/quicklisp/setup.lisp"
+export LISP=$HOME/lisp
+alias alisp-repl="rlwrap $LISP/linuxamd64.64/alisp -L $HOME/quicklisp/setup.lisp"
+alias alisp-smp-repl="rlwrap $LISP/linuxamd64.64smp/alisp -L $HOME/quicklisp/setup.lisp"
+alias mlisp-repl="rlwrap $LISP/linuxamd64.64/mlisp -L $HOME/quicklisp/setup.lisp"
+alias mlisp-smp-repl="rlwrap $LISP/linuxamd64.64smp/mlisp -L $HOME/quicklisp/setup.lisp"
+alias sbcl-repl="rlwrap $LISP/sbcl/bin/sbcl --noinform --load $HOME/quicklisp/setup.lisp --eval '(require :sb-aclrepl)'"
+alias ccl-repl="rlwrap $LISP/ccl/lx86cl64 --load $HOME/quicklisp/setup.lisp"
+alias ecl-repl="rlwrap $LISP/ecl/bin/ecl --load $HOME/quicklisp/setup.lisp"
