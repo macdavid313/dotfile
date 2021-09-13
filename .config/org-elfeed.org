@@ -22,6 +22,9 @@
 *** Hacker News :hackernews:
 **** [[https://hnrss.org/frontpage][Front page]]
 **** [[https://hnrss.org/jobs][Job feeds]]
+*** InfoWorld :infoworld:
+**** [[https://www.infoworld.com/news/index.rss][News]]
+**** [[https://www.infoworld.com/blog/all/index.rss][Blogs]] :blog:
 ** Blog :blog:
 *** [[https://aloso.github.io/feed.xml][Aloso’s blog]] :rust:
 *** [[https://matklad.github.io//feed.xml][matklad]] :rust:
