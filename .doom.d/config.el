@@ -91,9 +91,6 @@
             'toggle-frame-fullscreen)
           t)
 
-;; make emacs always use its own browser for opening URL links
-(setq browse-url-browser-function 'eww-browse-url)
-
 ;; open URL in a new buffer
 (when (fboundp 'eww)
   (defun doom/rename-eww-buffer ()
