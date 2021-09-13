@@ -119,13 +119,6 @@ Version 2017-11-10"
 (setq projectile-indexing-method 'alien)
 (setq projectile-sort-order 'recentf)
 
-;;; Set the minimum characters to 3 before a search is fired
-(after! ivy
-  (setq ivy-more-chars-alist '((counsel-grep . 3)
-                               (counsel-rg . 3)
-                               (counsel-search . 3)
-                               (t . 3))))
-
 ;;; company
 (use-package! company
   :config
@@ -151,17 +144,6 @@ Version 2017-11-10"
         lsp-rust-analyzer-server-display-inlay-hints t))
 
 ;;; Common Lisp and Slime
-(eval-after-load 'autoinsert
-  '(define-auto-insert
-     '(lisp-mode . "Common Lisp Header")
-     '("Short description: "
-       (concat ";; -*- mode: Lisp; tab-width: 2 -*-\n;; "
-               (file-name-nondirectory (buffer-file-name))
-               "\n"
-               ";; \n"
-               ";; \n"
-               ";; See the file LICENSE for the full license governing this code.\n\n"))))
-
 (add-hook 'lisp-mode-hook #'rainbow-delimiters-mode)
 
 ;; for Allegro CL source code
@@ -229,7 +211,11 @@ Version 2017-11-10"
       ;; buffers are meant to be displayed with sufficient vertical space.
       ("^\\*slime-\\(?:db\\|inspector\\)" :ignore t)))
 
-  (let* ((quicklisp-home (concat (file-name-as-directory (getenv "HOME")) "quicklisp"))
+  (let* ((lisp-home (file-name-as-directory (getenv "LISP")))
+         (sbcl (concat lisp-home "sbcl/bin/sbcl"))
+         (ccl (concat lisp-home "ccl/lx86cl64"))
+         (ecl (concat lisp-home "ecl/bin/ecl"))
+         (quicklisp-home (concat (file-name-as-directory (getenv "HOME")) "quicklisp"))
          (quicklisp-path (when (file-exists-p quicklisp-home)
                            (concat (file-name-as-directory quicklisp-home)
                                    "setup.lisp"))))
@@ -258,29 +244,23 @@ Version 2017-11-10"
                                         `(,(getenv "MLISP_SMP")
                                           ,@(when quicklisp-path `("-L" ,quicklisp-path)))))))
 
-    (when (executable-find "sbcl")
+    (when (file-exists-p sbcl)
       (add-to-list 'slime-lisp-implementations
                    (if quicklisp-path
-                       `(sbcl ("sbcl" "--load" ,quicklisp-path))
-                     `(sbcl ("sbcl" "--noinform")))))
+                       `(sbcl (,sbcl "--load" ,quicklisp-path))
+                     `(sbcl (,sbcl "--noinform")))))
 
-    (when (executable-find "lx86cl64")
+    (when (file-exists-p ccl)
       (add-to-list 'slime-lisp-implementations
                    (if quicklisp-path
-                       `(ccl ("lx86cl64" "--load" ,quicklisp-path))
-                     `(ccl ("lx86cl64")))))
+                       `(ccl (,ccl "--load" ,quicklisp-path))
+                     `(ccl (,ccl)))))
 
-    (when (executable-find "lisp")
+    (when (file-exists-p ecl)
       (add-to-list 'slime-lisp-implementations
                    (if quicklisp-path
-                       `(cmucl ("lisp" "-load" ,quicklisp-path))
-                     `(cmucl ("lisp")))))
-
-    (when (executable-find "ecl")
-      (add-to-list 'slime-lisp-implementations
-                   (if quicklisp-path
-                       `(ecl ("ecl" "-load" ,quicklisp-path))
-                     `(ecl ("ecl"))))))
+                       `(ecl (,ecl "-load" ,quicklisp-path))
+                     `(ecl (,ecl))))))
 
   (map! (:map slime-db-mode-map
          :n "gr" #'slime-db-restart-frame)
