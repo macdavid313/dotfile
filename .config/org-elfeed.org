@@ -1,9 +1,37 @@
 #+TITLE: Org Feed
 
 * root :elfeed:
+** Arxiv :arxiv:
+*** [[http://arxiv.org/rss/math.LO][Logic]] :cs:
+*** [[http://arxiv.org/rss/cs.DC][Distributed, Parallel, and Cluster Computing]] :cs:
+*** [[http://arxiv.org/rss/cs.DM][Discrete Mathematics]] :cs:
+*** [[http://arxiv.org/rss/cs.SC][Symbolic Computation]] :cs:
+*** [[http://arxiv.org/rss/cs.DS][Data Structure and Algorithms]] :cs:
 ** Programming :programming:
 *** [[https://this-week-in-rust.org/rss.xml][This Week in Rust]] :rust:
+*** [[https://rustcc.cn/rss][Rust.cc]] :rust:
+*** [[http://planet.lisp.org/rss20.xml][Planet Lisp]] :lisp:
+*** [[http://www.scheme.dk/planet/atom.xml][Planet Scheme]] :scheme:
+*** [[http://planetrdf.com/index.rdf][Planet RDF]] :rdf:
+*** [[https://blog.tecosaur.com/tmio/rss.xml][This Month in Org]] :org_mode:
 ** News :news:
 *** [[http://rss.slashdot.org/Slashdot/slashdotMain][Slashdot]] :slashdot:
-*** Infoq :infoq:
-***** https://feed.infoq.com/
+*** [[https://www.solidot.org/index.rss][Solidot]] :solidot:
+*** [[https://feed.infoq.com/][Infoq]] :infoq:
+*** [[http://www.infoq.com/cn/feed][InfoQ CN]] :infoqCN:
+*** Hacker News :hackernews:
+**** [[https://hnrss.org/frontpage][Front page]]
+**** [[https://hnrss.org/jobs][Job feeds]]
+** Blog :blog:
+*** [[https://aloso.github.io/feed.xml][Aloso’s blog]] :rust:
+*** [[https://matklad.github.io//feed.xml][matklad]] :rust:
+*** [[http://www.kawabangga.com/feed][卡瓦邦噶！]] :devops:
+*** [[https://bernsteinbear.com/feed.xml][Max Bernstein's Blog]]
+*** [[https://matthewbauer.us/blog/feed.xml][Matthew Bauer’s Blog]]
+*** [[https://takeonrules.com/index.xml][Take on Rules]] :emacs:
+*** [[https://defn.io/index.xml][defn.io]]
+*** [[http://www.salttiger.com/index.php/feed/][SaltTiger]] :ebook:
+*** [[http://lisp-univ-etc.blogspot.com/feeds/posts/default][Lisp, the Universe and Everything]] :lisp:
+*** [[https://nl.movim.eu/?feed/phoe%40movim.eu][Michał "phoe" Herda’s feed]] :lisp:
+*** [[http://douroucouli.wordpress.com/feed/][Monkeying around with OWL]]
+*** [[http://bobdc.com/blog/atom.xml][bobdc blog]] :rdf:
