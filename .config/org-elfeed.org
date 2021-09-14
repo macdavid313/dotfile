@@ -25,6 +25,15 @@
 *** InfoWorld :infoworld:
 **** [[https://www.infoworld.com/news/index.rss][News]]
 **** [[https://www.infoworld.com/blog/all/index.rss][Blogs]] :blog:
+*** Reddit :reddit:
+**** [[https://www.reddit.com/r/emacs.rss][emacs]] :emacs:
+**** [[https://www.reddit.com/r/algorithms.rss][algorithms]] :algorithms:
+**** [[https://www.reddit.com/r/Common_Lisp.rss][Common_Lisp]] :lisp:
+**** [[https://www.reddit.com/r/lisp.rss][lisp]] :lisp:
+**** [[https://www.reddit.com/r/rust.rss][rust]] :rust:
+**** [[https://www.reddit.com/r/commandline.rss][Command Line]] :programming:
+**** [[https://www.reddit.com/r/linux.rss][linux]] :linux:
+**** [[https://www.reddit.com/r/orgmode.rss][Org-mode]] :emacs:
 ** Blog :blog:
 *** [[https://aloso.github.io/feed.xml][Aloso’s blog]] :rust:
 *** [[https://matklad.github.io//feed.xml][matklad]] :rust:
