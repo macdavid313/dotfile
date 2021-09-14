@@ -407,3 +407,6 @@ Version 2017-11-10"
 ;;;; elfeed
 (setq rmh-elfeed-org-files '("~/.config/org-elfeed.org"))
 (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
+
+;;;; org-mode Agenda
+(setq org-agenda-files '("~/org/agenda/"))
