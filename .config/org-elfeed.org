@@ -2,18 +2,18 @@
 
 * root :elfeed:
 ** Arxiv :arxiv:
-*** [[http://arxiv.org/rss/math.LO][Logic]] :cs:
+*** [[http://arxiv.org/rss/math.LO][Logic]] :cs:logic:
 *** [[http://arxiv.org/rss/cs.DC][Distributed, Parallel, and Cluster Computing]] :cs:
-*** [[http://arxiv.org/rss/cs.DM][Discrete Mathematics]] :cs:
+*** [[http://arxiv.org/rss/cs.DM][Discrete Mathematics]] :cs:math:
 *** [[http://arxiv.org/rss/cs.SC][Symbolic Computation]] :cs:
-*** [[http://arxiv.org/rss/cs.DS][Data Structure and Algorithms]] :cs:
+*** [[http://arxiv.org/rss/cs.DS][Data Structure and Algorithms]] :cs:algorithm:
 ** Programming :programming:
 *** [[https://this-week-in-rust.org/rss.xml][This Week in Rust]] :rust:
-*** [[https://rustcc.cn/rss][Rust.cc]] :rust:
+*** [[https://rustcc.cn/rss][Rust.cc]] :rust:forum:
 *** [[http://planet.lisp.org/rss20.xml][Planet Lisp]] :lisp:
 *** [[http://www.scheme.dk/planet/atom.xml][Planet Scheme]] :scheme:
 *** [[http://planetrdf.com/index.rdf][Planet RDF]] :rdf:
-*** [[https://blog.tecosaur.com/tmio/rss.xml][This Month in Org]] :org_mode:
+*** [[https://blog.tecosaur.com/tmio/rss.xml][This Month in Org]] :orgmode:
 ** News :news:
 *** [[http://rss.slashdot.org/Slashdot/slashdotMain][Slashdot]] :slashdot:
 *** [[https://www.solidot.org/index.rss][Solidot]] :solidot:
@@ -27,17 +27,17 @@
 **** [[https://www.infoworld.com/blog/all/index.rss][Blogs]] :blog:
 *** Reddit :reddit:
 **** [[https://www.reddit.com/r/emacs.rss][emacs]] :emacs:
-**** [[https://www.reddit.com/r/algorithms.rss][algorithms]] :algorithms:
+**** [[https://www.reddit.com/r/algorithms.rss][algorithms]] :algorithm:
 **** [[https://www.reddit.com/r/Common_Lisp.rss][Common_Lisp]] :lisp:
 **** [[https://www.reddit.com/r/lisp.rss][lisp]] :lisp:
 **** [[https://www.reddit.com/r/rust.rss][rust]] :rust:
 **** [[https://www.reddit.com/r/commandline.rss][Command Line]] :programming:
 **** [[https://www.reddit.com/r/linux.rss][linux]] :linux:
-**** [[https://www.reddit.com/r/orgmode.rss][Org-mode]] :emacs:
+**** [[https://www.reddit.com/r/orgmode.rss][Org-mode]] :emacs:orgmode:
 ** Blog :blog:
 *** [[https://aloso.github.io/feed.xml][Aloso’s blog]] :rust:
 *** [[https://matklad.github.io//feed.xml][matklad]] :rust:
-*** [[http://www.kawabangga.com/feed][卡瓦邦噶！]] :devops:
+*** [[http://www.kawabangga.com/feed][卡瓦邦噶！]] :devops:赖信涛:
 *** [[https://bernsteinbear.com/feed.xml][Max Bernstein's Blog]]
 *** [[https://matthewbauer.us/blog/feed.xml][Matthew Bauer’s Blog]]
 *** [[https://takeonrules.com/index.xml][Take on Rules]] :emacs:
@@ -45,8 +45,8 @@
 *** [[http://www.salttiger.com/index.php/feed/][SaltTiger]] :ebook:
 *** [[http://lisp-univ-etc.blogspot.com/feeds/posts/default][Lisp, the Universe and Everything]] :lisp:
 *** [[https://nl.movim.eu/?feed/phoe%40movim.eu][Michał "phoe" Herda’s feed]] :lisp:
-*** [[http://douroucouli.wordpress.com/feed/][Monkeying around with OWL]]
+*** [[http://douroucouli.wordpress.com/feed/][Monkeying around with OWL]] :rdf:owl:
 *** [[http://bobdc.com/blog/atom.xml][bobdc blog]] :rdf:
 ** Emacs China :emacs:
-*** [[https://emacs-china.org/posts.rss][最新帖子]]
-*** [[https://emacs-china.org/latest.rss][最新主题]]
+*** [[https://emacs-china.org/posts.rss][最新帖子]] :forum:
+*** [[https://emacs-china.org/latest.rss][最新主题]] :forum:
