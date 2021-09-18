@@ -78,12 +78,12 @@ source $ZSH/oh-my-zsh.sh
 # FIXME: should be macOS only
 if [[ "$OSTYPE" == "darwin"* ]]; then
 
-  if [ -f "/opt/homebrew" ]; then
+  if [ -d "/opt/homebrew" ]; then
     export HOMEBREW_PREFIX="/opt/homebrew"
   fi
 
   # Homebrew on Intel Mac
-  if [ -f "/usr/local/Homebrew" ]; then
+  if [ -d "/usr/local/Homebrew" ]; then
     export HOMEBREW_PREFIX="/usr/local/Homebrew"
   fi
 

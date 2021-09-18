@@ -47,3 +47,6 @@
 *** [[https://nl.movim.eu/?feed/phoe%40movim.eu][Michał "phoe" Herda’s feed]] :lisp:
 *** [[http://douroucouli.wordpress.com/feed/][Monkeying around with OWL]]
 *** [[http://bobdc.com/blog/atom.xml][bobdc blog]] :rdf:
+** Emacs China :emacs:
+*** [[https://emacs-china.org/posts.rss][最新帖子]]
+*** [[https://emacs-china.org/latest.rss][最新主题]]
