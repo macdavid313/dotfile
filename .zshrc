@@ -78,7 +78,15 @@ source $ZSH/oh-my-zsh.sh
 # FIXME: should be macOS only
 if [[ "$OSTYPE" == "darwin"* ]]; then
 
-  export HOMEBREW_PREFIX="/opt/homebrew"
+  if [ -f "/opt/homebrew" ]; then
+    export HOMEBREW_PREFIX="/opt/homebrew"
+  fi
+
+  # Homebrew on Intel Mac
+  if [ -f "/usr/local/Homebrew" ]; then
+    export HOMEBREW_PREFIX="/usr/local/Homebrew"
+  fi
+
   eval $($HOMEBREW_PREFIX/bin/brew shellenv)
 
   if type brew &>/dev/null; then
