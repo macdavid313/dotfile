@@ -78,9 +78,6 @@ My current desktop is macOS. I use Emacs in the terminal (/iTerm2/) almost exclu
 
 #+begin_src emacs-lisp
 (setq doom-themme 'doom-xcode)
-;; (remove-hook 'window-setup-hook #'doom-init-theme-h)
-;; (add-hook 'after-init-hook #'doom-init-theme-h 'append)
-;; (delq! t custom-theme-load-path)
 #+end_src
 
 ** Open URL in a new buffer
