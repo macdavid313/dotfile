@@ -53,3 +53,13 @@
 (package! slime)
 (package! slime-company)
 (package! sparql-mode)
+(package! vlf :recipe (:host github :repo "m00natic/vlfi" :files ("*.el")))
+(package! string-inflection :pin "c4a519be102cb99dd86be3ee8c387f008d097635")
+(package! keycast :pin "04ba7519f34421c235bac458f0192c130f732f12")
+(package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines"))
+(package! org-pretty-table
+  :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "87772a9469d91770f87bfa788580fca69b9e697a")
+(package! org-appear :recipe (:host github :repo "awth13/org-appear")
+  :pin "148aa124901ae598f69320e3dcada6325cdc2cf0")
+(package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree")
+  :pin "207c748aa5fea8626be619e8c55bdb1c16118c25")

@@ -1,0 +1,1157 @@
+#+TITLE: Doom Emacs Configuration
+#+AUTHOR: gty
+#+STARTUP: fold
+
+* Step /zero/
+
+Make this file run (slightly) faster with lexical binding (see this [[https://nullprogram.com/blog/2016/12/22/][blog post]] for more info).
+
+#+begin_src emacs-lisp :comments no
+;;; config.el -*- lexical-binding: t; -*-
+#+end_src
+
+* Personal information
+
+Some functionality (e.g. =GPG=) uses this to identify me.
+
+#+begin_src emacs-lisp
+(setq user-full-name "Tianyu Gu"
+      user-mail-address "macdavid313@gmail.com")
+#+end_src
+
+* Basics
+
+** Better defaults
+
+These configurations talk for themselves.
+
+#+begin_src emacs-lisp
+(setq-default
+ delete-by-moving-to-trash t            ; Delete files to trash
+ window-combination-resize t ; take new window space from all other windows (not just current)
+ x-stretch-cursor t          ; Stretch cursor to the glyph width
+ )
+
+(setq undo-limit 80000000               ; Raise undo-limit to 80Mb
+      evil-want-fine-undo t ; By default while in insert all changes are one big blob. Be more granular
+      auto-save-default t   ; Nobody likes to loose work, I certainly don't
+      truncate-string-ellipsis "…" ; Unicode ellispis are nicer than "...", and also save /precious/ space
+      )
+
+(display-time-mode 1) ; Enable time in the mode-line
+
+(setq display-time-format "%R%p (%Z)"
+      display-time-world-list '(("America/Los_Angeles" "San Francisco")
+                                ("Asia/Bangkok" "Bangkok")
+                                ("Europe/Kiev" "Kiev")
+                                ("Asia/Tokyo" "Tokyo")))
+
+(defun display-time-world-minibuffer ()
+  "Like `display-time-world', but just display it in the minibuffer."
+  (interactive)
+  (message
+   (with-temp-buffer
+     (display-time-world-display display-time-world-list)
+     (buffer-string))))
+
+(global-subword-mode 1) ; Iterate through CamelCase words
+
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+(setq display-line-numbers-type 'relative)
+
+;; slightly nicer default buffer names
+(setq doom-fallback-buffer-name "► Doom"
+      +doom-dashboard-name "► Doom")
+
+(setq confirm-kill-emacs nil) ; ** Don't ask to quit
+#+end_src
+
+** Theme
+
+My current desktop is macOS. I use Emacs in the terminal (/iTerm2/) almost exclusively, and I've found this combination is good enough to me:
+
++ Desktop background: =Solar Gradients=
++ Terminal theme: =Tomorrow Night Bright=
++ Terminal font: =JetBrainsMono Nerd Font=
++ Emacs theme: =doom-xcode=
+
+#+begin_src emacs-lisp
+(setq doom-themme 'doom-xcode)
+;; (remove-hook 'window-setup-hook #'doom-init-theme-h)
+;; (add-hook 'after-init-hook #'doom-init-theme-h 'append)
+;; (delq! t custom-theme-load-path)
+#+end_src
+
+** Open URL in a new buffer
+
+#+begin_src emacs-lisp
+(when (fboundp 'eww)
+  (defun doom/rename-eww-buffer ()
+    "Rename `eww-mode' buffer so sites open in new page.
+URL `http://ergoemacs.org/emacs/emacs_eww_web_browser.html'
+Version 2017-11-10"
+    (let (($title (plist-get eww-data :title)))
+      (when (eq major-mode 'eww-mode)
+        (if $title
+            (rename-buffer (concat "eww " $title ) t)
+          (rename-buffer "eww" t)))))
+
+  (add-hook 'eww-after-render-hook 'doom/rename-eww-buffer))
+#+end_src
+
+** Helper macros
+
+- ~load!~ for loading external ~*.el~ files relative to this one
+- ~use-package!~ for configuring packages
+- ~after!~ for running code after a package has loaded
+- ~add-load-path!~ for adding directories to the ~load-path~, relative to this file. Emacs searches the ~load-path~ when you load packages with ~require~ or ~use-package~.
+- ~map!~ for binding new keys
+
+** Mouse butttons
+
+#+begin_src emacs-lisp
+(map! :n [mouse-8] #'better-jumper-jump-backward
+      :n [mouse-9] #'better-jumper-jump-forward)
+#+end_src
+
+** Window title
+
+#+begin_src emacs-lisp
+(setq frame-title-format
+      '(""
+        (:eval
+         (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+             (replace-regexp-in-string
+              ".*/[0-9]*-?" "☰ "
+              (subst-char-in-string ?_ ?  buffer-file-name))
+           "%b"))
+        (:eval
+         (let ((project-name (projectile-project-name)))
+           (unless (string= "-" project-name)
+             (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
+#+end_src
+
+** Doom Dashboard
+
+All the useful commands are not really useful to me anymore, so I choose to disable them.
+
+#+begin_src emacs-lisp
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+(add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1))
+(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
+#+end_src
+
+The following is rather long, but it essentially
+
++ fetches a phrase from an API
++ inserts it into the dashboard (asynchronously)
++ moves point to the phrase
++ re-uses the last phrase for requests within a few seconds of it being fetched
+
+#+begin_src emacs-lisp
+(defvar phrase-api-url
+  (nth (random 3)
+       '(("https://corporatebs-generator.sameerkumar.website/" :phrase)
+         ("https://useless-facts.sameerkumar.website/api" :data)
+         ("https://dev-excuses-api.herokuapp.com/" :text))))
+
+(defmacro phrase-generate-callback (token &optional format-fn ignore-read-only callback buffer-name)
+  `(lambda (status)
+     (unless (plist-get status :error)
+       (goto-char url-http-end-of-headers)
+       (let ((phrase (plist-get (json-parse-buffer :object-type 'plist) (cadr phrase-api-url)))
+             (inhibit-read-only ,(when (eval ignore-read-only) t)))
+         (setq phrase-last (cons phrase (float-time)))
+         (with-current-buffer ,(or (eval buffer-name) (buffer-name (current-buffer)))
+           (save-excursion
+             (goto-char (point-min))
+             (when (search-forward ,token nil t)
+               (with-silent-modifications
+                 (replace-match "")
+                 (insert ,(if format-fn format-fn 'phrase)))))
+           ,callback)))))
+
+(defvar phrase-last nil)
+(defvar phrase-timeout 5)
+
+(defmacro phrase-insert-async (&optional format-fn token ignore-read-only callback buffer-name)
+  `(let ((inhibit-message t))
+     (if (and phrase-last
+              (> phrase-timeout (- (float-time) (cdr phrase-last))))
+         (let ((phrase (car phrase-last)))
+           ,(if format-fn format-fn 'phrase))
+       (url-retrieve (car phrase-api-url)
+                     (phrase-generate-callback ,(or token "\ufeff") ,format-fn ,ignore-read-only ,callback ,buffer-name))
+       ;; For reference, \ufeff = Zero-width no-break space / BOM
+       ,(or token "\ufeff"))))
+
+(defun doom-dashboard-phrase ()
+  (phrase-insert-async
+   (progn
+     (setq-local phrase-position (point))
+     (mapconcat
+      (lambda (line)
+        (+doom-dashboard--center
+         +doom-dashboard--width
+         (with-temp-buffer
+           (insert-text-button
+            line
+            'action
+            (lambda (_)
+              (setq phrase-last nil)
+              (+doom-dashboard-reload t))
+            'face 'doom-dashboard-menu-title
+            'mouse-face 'doom-dashboard-menu-title
+            'help-echo "Random phrase"
+            'follow-link t)
+           (buffer-string))))
+      (split-string
+       (with-temp-buffer
+         (insert phrase)
+         (setq fill-column (min 70 (/ (* 2 (window-width)) 3)))
+         (fill-region (point-min) (point-max))
+         (buffer-string))
+       "\n")
+      "\n"))
+   nil t
+   (progn
+     (goto-char phrase-position)
+     (forward-whitespace 1))
+   +doom-dashboard-name))
+
+(defadvice! doom-dashboard-widget-loaded-with-phrase ()
+  :override #'doom-dashboard-widget-loaded
+  (setq line-spacing 0.2)
+  (insert
+   "\n\n"
+   (propertize
+    (+doom-dashboard--center
+     +doom-dashboard--width
+     (doom-display-benchmark-h 'return))
+    'face 'doom-dashboard-loaded)
+   "\n"
+   (doom-dashboard-phrase)
+   "\n"))
+#+end_src
+
+TODO: customize DOOM dashboard ASCII banner
+
+** Which-key
+
+Let’s make this popup a bit faster
+
+#+begin_src emacs-lisp
+(setq which-key-idle-delay 0.5) ;; I need the help, I really do
+#+end_src
+
+I also think that having =evil-= appear in so many popups is a bit too verbose, let’s change that, and do a few other similar tweaks while we’re at it.
+
+#+begin_src emacs-lisp
+(setq which-key-allow-multiple-replacements t)
+(after! which-key
+  (pushnew!
+   which-key-replacement-alist
+   '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
+   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
+   ))
+#+end_src
+
+* Tools
+
+** Abbrev
+
+#+begin_src emacs-lisp
+(add-hook 'doom-first-buffer-hook
+          (defun +abbrev-file-name ()
+            (setq-default abbrev-mode t)
+            (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))))
+#+end_src
+
+** Very large files
+
+The very large files mode loads large files in chunks, allowing one to open ridiculously large files.
+
+To make VLF available without delaying startup, we'll just load it in quiet moments.
+
+#+begin_src emacs-lisp
+(use-package! vlf-setup
+  :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
+#+end_src
+
+** Eros
+
+This package enables the very nice inline evaluation with =gr= and =gR=. The prefix could be slightly nicer though.
+
+#+begin_src emacs-lisp
+(setq eros-eval-result-prefix "⟹ ") ; default =>
+#+end_src
+
+** Consult
+
+#+begin_src emacs-lisp
+;; (after! consult
+;;   (set-face-attribute 'consult-file nil :inherit 'consult-buffer)
+;;   (setf (plist-get (alist-get 'perl consult-async-split-styles-alist) :initial) ";"))
+#+end_src
+
+** Magit
+
+Magit is absolutely great by default. The diffs don't get any syntax-highlighting-love though which is a bit sad. Thankfully [[https://github.com/dandavison/magit-delta][dandavison/magit-delta]] exists, which we can put to use.
+
+** Company
+
+It’s nice to have completions almost all the time, in my opinion. Key strokes are just waiting to be saved!
+
+#+begin_src emacs-lisp
+(after! company
+  (setq company-idle-delay 0.5
+        company-minimum-prefix-length 2)
+  (setq company-show-numbers t)
+  (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
+#+end_src
+
+Now, the improvements from precedent are mostly from remembering history, so let’s improve that memory.
+
+#+begin_src emacs-lisp
+(setq-default history-length 1000)
+(setq-default prescient-history-length 1000)
+#+end_src
+
+** Plain text
+
+Ispell is nice, let’s have it in text, markdown, and GFM.
+
+#+begin_src emacs-lisp
+(set-company-backend!
+  '(text-mode
+    markdown-mode
+    gfm-mode)
+  '(:seperate
+    company-ispell
+    company-files
+    company-yasnippet))
+#+end_src
+
+** Projectile
+
+#+begin_src emacs-lisp
+(setq projectile-indexing-method 'alien)
+(setq projectile-sort-order 'recentf)
+#+end_src
+
+Looking at documentation via ~SPC h f~ and ~SPC h v~ and looking at the source can add package src directories to projectile. This isn’t desirable in my opinion.
+
+#+begin_src emacs-lisp
+(setq projectile-ignored-projects '("~/" "/tmp" "~/.emacs.d/.local/straight/repos/"))
+(defun projectile-ignored-project-function (filepath)
+  "Return t if FILEPATH is within any of `projectile-ignored-projects'"
+  (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
+#+end_src
+
+** String inflection
+
+#+begin_src emacs-lisp
+(use-package! string-inflection
+  :commands (string-inflection-all-cycle
+             string-inflection-toggle
+             string-inflection-camelcase
+             string-inflection-lower-camelcase
+             string-inflection-kebab-case
+             string-inflection-underscore
+             string-inflection-capital-underscore
+             string-inflection-upcase)
+  :init
+  (map! :leader :prefix ("c~" . "naming convention")
+        :desc "cycle" "~" #'string-inflection-all-cycle
+        :desc "toggle" "t" #'string-inflection-toggle
+        :desc "CamelCase" "c" #'string-inflection-camelcase
+        :desc "downCase" "d" #'string-inflection-lower-camelcase
+        :desc "kebab-case" "k" #'string-inflection-kebab-case
+        :desc "under_score" "_" #'string-inflection-underscore
+        :desc "Upper_Score" "u" #'string-inflection-capital-underscore
+        :desc "UP_CASE" "U" #'string-inflection-upcase)
+  (after! evil
+    (evil-define-operator evil-operator-string-inflection (beg end _type)
+      "Define a new evil operator that cycles symbol casing."
+      :move-point nil
+      (interactive "<R>")
+      (string-inflection-all-cycle)
+      (setq evil-repeat-info '([?g ?~])))
+    (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection)))
+#+end_src
+
+** Smart parentheses
+
+#+begin_src emacs-lisp
+(sp-local-pair
+ '(org-mode)
+ "<<" ">>"
+ :actions '(insert))
+#+end_src
+
+* Visual
+
+** Emojify
+
+For starters, twitter’s emojis look nicer than emoji-one. Other than that, this is pretty great OOTB 😀.
+
+#+begin_src emacs-lisp
+(setq emojify-emoji-set "twemoji-v2")
+#+end_src
+
+One minor annoyance is the use of emojis over the default character when the default is actually preferred. This occurs with overlay symbols I use in Org mode, such as checkbox state, and a few other miscellaneous cases.
+
+We can accommodate our preferences by deleting those entries from the emoji hash table
+
+#+begin_src emacs-lisp
+(defvar emojify-disabled-emojis
+  '(;; Org
+    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓"
+    ;; Terminal powerline
+    "✔"
+    ;; Box drawing
+    "▶" "◀")
+  "Characters that should never be affected by `emojify-mode'.")
+
+(defadvice! emojify-delete-from-data ()
+  "Ensure `emojify-disabled-emojis' don't appear in `emojify-emojis'."
+  :after #'emojify-set-emoji-data
+  (dolist (emoji emojify-disabled-emojis)
+    (remhash emoji emojify-emojis)))
+#+end_src
+
+** Keycast
+
+For some reason, I find myself demoing Emacs every now and then. Showing what keyboard stuff I’m doing on-screen seems helpful. While screenkey does exist, having something that doesn’t cover up screen content is nice.
+
+#+begin_src emacs-lisp
+(use-package! keycast
+  :commands keycast-mode
+  :config
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+        (progn
+          (add-hook 'pre-command-hook 'keycast--update t)
+          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+      (remove-hook 'pre-command-hook 'keycast--update)
+      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
+  (custom-set-faces!
+    '(keycast-command :inherit doom-modeline-debug
+                      :height 0.9)
+    '(keycast-key :inherit custom-modified
+                  :height 1.1
+                  :weight bold)))
+#+end_src
+
+** Marginalia
+
+#+begin_src emacs-lisp
+(after! marginalia
+  (setq marginalia-censor-variables nil)
+
+  (defadvice! +marginalia--anotate-local-file-colorful (cand)
+    "Just a more colourful version of `marginalia--anotate-local-file'."
+    :override #'marginalia--annotate-local-file
+    (when-let (attrs (file-attributes (substitute-in-file-name
+                                       (marginalia--full-candidate cand))
+                                      'integer))
+      (marginalia--fields
+       ((marginalia--file-owner attrs)
+        :width 12 :face 'marginalia-file-owner)
+       ((marginalia--file-modes attrs))
+       ((+marginalia-file-size-colorful (file-attribute-size attrs))
+        :width 7)
+       ((+marginalia--time-colorful (file-attribute-modification-time attrs))
+        :width 12))))
+
+  (defun +marginalia--time-colorful (time)
+    (let* ((seconds (float-time (time-subtract (current-time) time)))
+           (color (doom-blend
+                   (face-attribute 'marginalia-date :foreground nil t)
+                   (face-attribute 'marginalia-documentation :foreground nil t)
+                   (/ 1.0 (log (+ 3 (/ (+ 1 seconds) 345600.0)))))))
+      ;; 1 - log(3 + 1/(days + 1)) % grey
+      (propertize (marginalia--time time) 'face (list :foreground color))))
+
+  (defun +marginalia-file-size-colorful (size)
+    (let* ((size-index (/ (log10 (+ 1 size)) 7.0))
+           (color (if (< size-index 10000000) ; 10m
+                      (doom-blend 'orange 'green size-index)
+                    (doom-blend 'red 'orange (- size-index 1)))))
+      (propertize (file-size-human-readable size) 'face (list :foreground color)))))
+#+end_src
+
+** ALl the icons
+
+In some files, =^L= appears as a page break character. This isn’t that visually appealing, and Steve Purcell has been nice enough to make a package to display these as horizontal rules.
+
+#+begin_src emacs-lisp
+(use-package! page-break-lines
+  :commands page-break-lines-mode
+  :init
+  (autoload 'turn-on-page-break-lines-mode "page-break-lines")
+  :config
+  (setq page-break-lines-max-width fill-column)
+  (map! :prefix "g"
+        :desc "Prev page break" :nv "[" #'backward-page
+        :desc "Next page break" :nv "]" #'forward-page))
+#+end_src
+
+** Treemacs
+
+Quite often there are superfluous files I’m not that interested in. There’s no good reason for them to take up space. Let’s add a mechanism to ignore them.
+
+#+begin_src emacs-lisp
+(after! treemacs
+  (defvar treemacs-file-ignore-extensions '()
+    "File extension which `treemacs-ignore-filter' will ensure are ignored")
+  (defvar treemacs-file-ignore-globs '()
+    "Globs which will are transformed to `treemacs-file-ignore-regexps' which `treemacs-ignore-filter' will ensure are ignored")
+  (defvar treemacs-file-ignore-regexps '()
+    "RegExps to be tested to ignore files, generated from `treeemacs-file-ignore-globs'")
+  (defun treemacs-file-ignore-generate-regexps ()
+    "Generate `treemacs-file-ignore-regexps' from `treemacs-file-ignore-globs'"
+    (setq treemacs-file-ignore-regexps (mapcar 'dired-glob-regexp treemacs-file-ignore-globs)))
+  (if (equal treemacs-file-ignore-globs '()) nil (treemacs-file-ignore-generate-regexps))
+  (defun treemacs-ignore-filter (file full-path)
+    "Ignore files specified by `treemacs-file-ignore-extensions', and `treemacs-file-ignore-regexps'"
+    (or (member (file-name-extension file) treemacs-file-ignore-extensions)
+        (let ((ignore-file nil))
+          (dolist (regexp treemacs-file-ignore-regexps ignore-file)
+            (setq ignore-file (or ignore-file (if (string-match-p regexp full-path) t nil)))))))
+  (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-filter))
+#+end_src
+
+Now, we just identify the files in question.
+
+#+begin_src emacs-lisp
+(setq treemacs-file-ignore-extensions
+      '(;; LaTeX
+        "aux"
+        "ptc"
+        "fdb_latexmk"
+        "fls"
+        "synctex.gz"
+        "toc"
+        ;; LaTeX - glossary
+        "glg"
+        "glo"
+        "gls"
+        "glsdefs"
+        "ist"
+        "acn"
+        "acr"
+        "alg"
+        ;; LaTeX - pgfplots
+        "mw"
+        ;; LaTeX - pdfx
+        "pdfa.xmpi"
+        ))
+(setq treemacs-file-ignore-globs
+      '(;; LaTeX
+        "*/_minted-*"
+        ;; AucTeX
+        "*/.auctex-auto"
+        "*/_region_.log"
+        "*/_region_.tex"))
+#+end_src
+
+* Applications
+
+** Calendar
+
+#+begin_src emacs-lisp
+(setq calendar-month-name-array         ; Month
+      ["January" "February" "March"     "April"   "May"      "June"
+       "July"    "August"   "September" "October" "November" "December"]
+
+      calendar-day-name-array           ; Week days
+      ["Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday"]
+
+      calendar-week-start-day        ; First day of the week, 0:Sunday, 1:Monday
+      1)
+
+(defun open-calendar ()
+  (interactive)
+  (cfw:open-calendar-buffer
+   :contents-sources
+   (list
+    (cfw:org-create-source "Orange")
+    (cfw:ical-create-source "中国节假日" "https://calendar.google.com/calendar/ical/zh-cn.china%23holiday%40group.v.calendar.google.com/public/basic.ics" "Red")
+    (cfw:ical-create-source "Holidays in Australia" "https://calendar.google.com/calendar/ical/zh-cn.australian%23holiday%40group.v.calendar.google.com/public/basic.ics" "Blue"))))
+#+end_src
+
+** Newsfeed
+
+Yes, RSS feeds are still a thing. Instead of using some "AI-curated content" platform, I'd rather organize what I am willing to spend time reading.
+
+#+begin_src emacs-lisp
+(setq rmh-elfeed-org-files '("~/.config/org-elfeed.org"))
+(add-hook! 'elfeed-search-mode-hook 'elfeed-update)
+#+end_src
+
+*** Keybindings
+
+#+begin_src emacs-lisp
+(map! :map elfeed-search-mode-map
+      :after elfeed-search
+      [remap kill-this-buffer] "q"
+      [remap kill-buffer] "q"
+      :n doom-leader-key nil
+      :n "q" #'+rss/quit
+      :n "e" #'elfeed-update
+      :n "r" #'elfeed-search-untag-all-unread
+      :n "u" #'elfeed-search-tag-all-unread
+      :n "s" #'elfeed-search-live-filter
+      :n "RET" #'elfeed-search-show-entry
+      :n "p" #'elfeed-show-pdf
+      :n "+" #'elfeed-search-tag-all
+      :n "-" #'elfeed-search-untag-all
+      :n "S" #'elfeed-search-set-filter
+      :n "b" #'elfeed-search-browse-url
+      :n "y" #'elfeed-search-yank)
+(map! :map elfeed-show-mode-map
+      :after elfeed-show
+      [remap kill-this-buffer] "q"
+      [remap kill-buffer] "q"
+      :n doom-leader-key nil
+      :nm "q" #'+rss/delete-pane
+      :nm "o" #'ace-link-elfeed
+      :nm "RET" #'org-ref-elfeed-add
+      :nm "n" #'elfeed-show-next
+      :nm "N" #'elfeed-show-prev
+      :nm "p" #'elfeed-show-pdf
+      :nm "+" #'elfeed-show-tag
+      :nm "-" #'elfeed-show-untag
+      :nm "s" #'elfeed-show-new-live-search
+      :nm "y" #'elfeed-show-yank)
+#+end_src
+
+*** Usability enhancements
+
+#+begin_src emacs-lisp
+(after! elfeed-search
+  (set-evil-initial-state! 'elfeed-search-mode 'normal))
+(after! elfeed-show-mode
+  (set-evil-initial-state! 'elfeed-show-mode   'normal))
+
+(after! evil-snipe
+  (push 'elfeed-show-mode   evil-snipe-disabled-modes)
+  (push 'elfeed-search-mode evil-snipe-disabled-modes))
+#+end_src
+
+*** Visual enhancements
+
+#+begin_src emacs-lisp
+(after! elfeed
+
+  (elfeed-org)
+  (use-package! elfeed-link)
+
+  (setq elfeed-search-filter "@1-week-ago +unread"
+        elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
+        elfeed-search-title-min-width 80
+        elfeed-show-entry-switch #'pop-to-buffer
+        elfeed-show-entry-delete #'+rss/delete-pane
+        elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
+        shr-max-image-proportion 0.6)
+
+  (add-hook! 'elfeed-show-mode-hook (hide-mode-line-mode 1))
+  (add-hook! 'elfeed-search-update-hook #'hide-mode-line-mode)
+
+  (defface elfeed-show-title-face '((t (:weight ultrabold :slant italic :height 1.5)))
+    "title face in elfeed show buffer"
+    :group 'elfeed)
+  (defface elfeed-show-author-face `((t (:weight light)))
+    "title face in elfeed show buffer"
+    :group 'elfeed)
+  (set-face-attribute 'elfeed-search-title-face nil
+                      :foreground 'nil
+                      :weight 'light)
+
+  (defadvice! +rss-elfeed-wrap-h-nicer ()
+    "Enhances an elfeed entry's readability by wrapping it to a width of
+`fill-column' and centering it with `visual-fill-column-mode'."
+    :override #'+rss-elfeed-wrap-h
+    (setq-local truncate-lines nil
+                shr-width 120
+                visual-fill-column-center-text t
+                default-text-properties '(line-height 1.1))
+    (let ((inhibit-read-only t)
+          (inhibit-modification-hooks t))
+      (visual-fill-column-mode)
+      ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
+      (set-buffer-modified-p nil)))
+
+  (defun +rss/elfeed-search-print-entry (entry)
+    "Print ENTRY to the buffer."
+    (let* ((elfeed-goodies/tag-column-width 40)
+           (elfeed-goodies/feed-source-column-width 30)
+           (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
+           (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
+           (feed (elfeed-entry-feed entry))
+           (feed-title
+            (when feed
+              (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
+           (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
+           (tags-str (concat (mapconcat 'identity tags ",")))
+           (title-width (- (window-width) elfeed-goodies/feed-source-column-width
+                           elfeed-goodies/tag-column-width 4))
+
+           (tag-column (elfeed-format-column
+                        tags-str (elfeed-clamp (length tags-str)
+                                               elfeed-goodies/tag-column-width
+                                               elfeed-goodies/tag-column-width)
+                        :left))
+           (feed-column (elfeed-format-column
+                         feed-title (elfeed-clamp elfeed-goodies/feed-source-column-width
+                                                  elfeed-goodies/feed-source-column-width
+                                                  elfeed-goodies/feed-source-column-width)
+                         :left)))
+
+      (insert (propertize feed-column 'face 'elfeed-search-feed-face) " ")
+      (insert (propertize tag-column 'face 'elfeed-search-tag-face) " ")
+      (insert (propertize title 'face title-faces 'kbd-help title))
+      (setq-local line-spacing 0.2)))
+
+  (defun +rss/elfeed-show-refresh--better-style ()
+    "Update the buffer to match the selected entry, using a mail-style."
+    (interactive)
+    (let* ((inhibit-read-only t)
+           (title (elfeed-entry-title elfeed-show-entry))
+           (date (seconds-to-time (elfeed-entry-date elfeed-show-entry)))
+           (author (elfeed-meta elfeed-show-entry :author))
+           (link (elfeed-entry-link elfeed-show-entry))
+           (tags (elfeed-entry-tags elfeed-show-entry))
+           (tagsstr (mapconcat #'symbol-name tags ", "))
+           (nicedate (format-time-string "%a, %e %b %Y %T %Z" date))
+           (content (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
+           (type (elfeed-entry-content-type elfeed-show-entry))
+           (feed (elfeed-entry-feed elfeed-show-entry))
+           (feed-title (elfeed-feed-title feed))
+           (base (and feed (elfeed-compute-base (elfeed-feed-url feed)))))
+      (erase-buffer)
+      (insert "\n")
+      (insert (format "%s\n\n" (propertize title 'face 'elfeed-show-title-face)))
+      (insert (format "%s\t" (propertize feed-title 'face 'elfeed-search-feed-face)))
+      (when (and author elfeed-show-entry-author)
+        (insert (format "%s\n" (propertize author 'face 'elfeed-show-author-face))))
+      (insert (format "%s\n\n" (propertize nicedate 'face 'elfeed-log-date-face)))
+      (when tags
+        (insert (format "%s\n"
+                        (propertize tagsstr 'face 'elfeed-search-tag-face))))
+      ;; (insert (propertize "Link: " 'face 'message-header-name))
+      ;; (elfeed-insert-link link link)
+      ;; (insert "\n")
+      (cl-loop for enclosure in (elfeed-entry-enclosures elfeed-show-entry)
+               do (insert (propertize "Enclosure: " 'face 'message-header-name))
+               do (elfeed-insert-link (car enclosure))
+               do (insert "\n"))
+      (insert "\n")
+      (if content
+          (if (eq type 'html)
+              (elfeed-insert-html content base)
+            (insert content))
+        (insert (propertize "(empty)\n" 'face 'italic)))
+      (goto-char (point-min))))
+
+  )
+#+end_src
+
+* Language configuration
+
+** General
+
+*** File templates
+
+For some file types, we overwrite defaults in the snippets directory, others need to have a template assigned.
+
+#+begin_src emacs-lisp
+(set-file-template! "\\.tex$" :trigger "__" :mode 'latex-mode)
+(set-file-template! "\\.org$" :trigger "__" :mode 'org-mode)
+(set-file-template! "/LICEN[CS]E$" :trigger '+file-templates/insert-license)
+#+end_src
+
+** Plaintext
+
+It’s nice to see ANSI colour codes displayed. However, until Emacs 28 it’s not possible to do this without modifying the buffer, so let’s condition this block on that.
+
+#+begin_src emacs-lisp
+;; (after! text-mode
+;;   (add-hook! 'text-mode-hook
+;;              ;; Apply ANSI color codes
+;;              (with-silent-modifications
+;;                (ansi-color-apply-on-region (point-min) (point-max) t))))
+#+end_src
+
+** Org
+
+I really like org mode, and I am still learning it.
+
+*** org-roam v2
+
+#+begin_src emacs-lisp
+(setq org-roam-directory "~/org/roam")
+#+end_src
+
+*** org-journal
+
+#+begin_src emacs-lisp
+(setq org-journal-dir "~/org/journal"
+      org-journal-date-prefix "#+TITLE: "
+      org-journal-time-prefix "* "
+      org-journal-file-format "%Y-%m-%d.org")
+#+end_src
+
+*** Agenda
+
+All files are synchronised through iCloud and shared with =beorg= app on my iPhone and other devices.
+
+#+begin_src emacs-lisp
+(setq org-agenda-files '("~/org/agenda/"))
+#+end_src
+
+*** Tables
+
+Org tables aren’t the prettiest thing to look at. This package is supposed to redraw them in the buffer with box-drawing characters. Sounds like an improvement to me! We’ll make use of this with =writeroom-mode=.
+
+#+begin_src emacs-lisp
+(use-package! org-pretty-table
+  :commands (org-pretty-table-mode global-org-pretty-table-mode))
+#+end_src
+
+*** Emphasis markers
+
+While =org-hide-emphasis-markers= is very nice, it can sometimes make edits which occur at the border a bit more fiddley. We can improve this situation without sacrificing visual amenities with the =org-appear= package.
+
+#+begin_src emacs-lisp
+(use-package! org-appear
+  :hook (org-mode . org-appear-mode)
+  :config
+  (setq org-appear-autoemphasis t
+        org-appear-autosubmarkers t
+        org-appear-autolinks nil)
+  ;; for proper first-time setup, `org-appear--set-elements'
+  ;; needs to be run after other hooks have acted.
+  (run-at-time nil nil #'org-appear--set-elements))
+#+end_src
+
+*** Heading structure
+
+Speaking of headlines, a nice package for viewing and managing the heading structure has come to my attention.
+
+#+begin_src emacs-lisp
+(use-package! org-ol-tree
+  :commands org-ol-tree)
+(map! :map org-mode-map
+      :after org
+      :localleader
+      :desc "Outline" "O" #'org-ol-tree)
+#+end_src
+
+** SPARQL
+
+#+begin_src emacs-lisp
+(use-package! sparql-mode
+  :config
+  (add-hook 'auto-mode-alist '("\\.sparql$" . sparql-mode))
+  (add-to-list 'auto-mode-alist '("\\.rq$" . sparql-mode))
+  (add-hook 'sparql-mode-hook 'company-mode))
+#+end_src
+
+** LSP
+
+TODO: need to test further with Python and Rust ...
+
+#+begin_src emacs-lisp
+(add-hook 'lsp-mode-hook
+          (lambda ()
+            (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.venv\\'")
+            (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]venv\\'")))
+#+end_src
+
+** Paredit
+
+A must-have for Lisps.
+
+#+begin_src emacs-lisp
+(use-package! paredit
+  :config
+  ;; hook lisp modes
+  (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+  (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+  (add-hook 'racket-mode-hook           #'enable-paredit-mode)
+  ;; Electric RETURN
+  (defvar electrify-return-match
+    "[\]}\)\"]"
+    "If this regexp matches the text after the cursor, do an \"electric\"
+  return.")
+  (defun electrify-return-if-match (arg)
+    "If the text after the cursor matches `electrify-return-match' then
+  open and indent an empty line between the cursor and the text.  Move the
+  cursor to the new line."
+    (interactive "P")
+    (let ((case-fold-search nil))
+      (if (looking-at electrify-return-match)
+      (save-excursion (newline-and-indent)))
+      (newline arg)
+      (indent-according-to-mode)))
+  ;; Using local-set-key in a mode-hook is a better idea.
+  (global-set-key (kbd "RET") 'electrify-return-if-match))
+#+end_src
+
+** Common Lisp
+
+#+begin_example
+ _____                                         _     _
+/  __ \                                       | |   (_)
+| /  \/ ___  _ __ ___  _ __ ___   ___  _ __   | |    _ ___ _ __
+| |    / _ \| '_ ` _ \| '_ ` _ \ / _ \| '_ \  | |   | / __| '_ \
+| \__/\ (_) | | | | | | | | | | | (_) | | | | | |___| \__ \ |_) |
+ \____/\___/|_| |_| |_|_| |_| |_|\___/|_| |_| \_____/_|___/ .__/
+                                                          | |
+                                                          |_|
+#+end_example
+
+Add some rainbows to the parentheses!
+
+#+begin_src emacs-lisp
+(add-hook 'lisp-mode-hook #'rainbow-delimiters-mode)
+#+end_src
+
+People at Franz tend to use =.cl= for lisp file extension.
+
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.cl\\'" . lisp-mode))
+#+end_src
+
+*** Documentations
+
+#+begin_src emacs-lisp
+(when (getenv "CL_DOCUMENTATION")
+  (let* ((root (file-name-as-directory (getenv "CL_DOCUMENTATION")))
+         (acl-doc-root (file-name-as-directory (concat root "allegro")))
+         (cltl2-root (file-name-as-directory (concat root "cltl"))))
+
+    (defun acl-doc ()
+      "Quickly access AllegroCL Manual"
+      (interactive)
+      (eww-open-file (concat acl-doc-root "contents.htm")))
+
+    (defun cltl2 ()
+      "Quickly access Common Lisp the Language 2nd Edition"
+      (interactive)
+      (eww-open-file (concat (file-name-as-directory (concat cltl2-root "clm")) "node1.html")))))
+
+(defun sbcl-doc ()
+  "Quickly access SBCL Manual"
+  (interactive)
+  (eww-browse-url "http://www.sbcl.org/manual/index.html"))
+#+end_src
+
+*** Slime
+
+#+begin_src emacs-lisp
+(use-package! slime
+  :hook (lisp-mode-local-vars . slime-editing-mode)
+  :init
+  (after! lisp-mode
+    (set-repl-handler! 'lisp-mode #'slime-repl)
+    (set-eval-handler! 'lisp-mode #'slime-eval-region)
+    (set-lookup-handlers! 'lisp-mode
+      :definition #'slime-edit-definition
+      :documentation #'slime-describe-symbol))
+  :config
+  (when (getenv "HYPERSPEC_ROOT")
+    (let* ((hyperspec-root (file-name-as-directory (getenv "HYPERSPEC_ROOT")))
+           (hyperspec-symbol-table (concat hyperspec-root "Data/Map_Sym.txt"))
+           (hyperspec-issuex-table (concat hyperspec-root "Data/Map_IssX.txt")))
+      (setq common-lisp-hyperspec-root hyperspec-root
+            common-lisp-hyperspec-symbol-table hyperspec-symbol-table
+            common-lisp-hyperspec-issuex-table hyperspec-issuex-table)))
+
+  (setf slime-repl-history-file (concat doom-cache-dir "slime-repl-history")
+        slime-kill-without-query-p t
+        slime-default-lisp 'sbcl
+        slime-protocol-version 'ignore
+        slime-net-coding-system 'utf-8-unix
+        slime-load-failed-fasl 'never
+        slime-completion-at-point-functions 'slime-fuzzy-complete-symbol)
+
+  (local-set-key [tab] 'slime-complete-symbol)
+  (local-set-key (kbd "M-q") 'slime-reindent-defun)
+
+  ;; fix indentation for `if*' when using keyword forms
+  (setq common-lisp-indent-if*-keyword
+        (rx (? ":") (or "else" "elseif" "then")))
+
+  (set-popup-rules!
+    '(("^\\*slime-repl"        :vslot 2 :size 0.3 :quit nil :ttl nil)
+      ("^\\*slime-compilation" :vslot 3 :ttl nil)
+      ("^\\*slime-traces"      :vslot 4 :ttl nil)
+      ("^\\*slime-description" :vslot 5 :size 0.3 :ttl 0)
+      ;; Do not display debugger or inspector buffers in a popup window. These
+      ;; buffers are meant to be displayed with sufficient vertical space.
+      ("^\\*slime-\\(?:db\\|inspector\\)" :ignore t)))
+
+  (let* ((lisp-home (file-name-as-directory (getenv "LISP")))
+         (sbcl (concat lisp-home "sbcl/bin/sbcl"))
+         (ccl (concat lisp-home "ccl/lx86cl64"))
+         (ecl (concat lisp-home "ecl/bin/ecl"))
+         (quicklisp-home (concat (file-name-as-directory (getenv "HOME")) "quicklisp"))
+         (quicklisp-path (when (file-exists-p quicklisp-home)
+                           (concat (file-name-as-directory quicklisp-home)
+                                   "setup.lisp"))))
+
+    (when (getenv "ALISP")
+      (add-to-list 'slime-lisp-implementations
+                   `(alisp ,(remove nil
+                                    `(,(getenv "ALISP")
+                                      ,@(when quicklisp-path `("-L" ,quicklisp-path)))))))
+
+    (when (getenv "MLISP")
+      (add-to-list 'slime-lisp-implementations
+                   `(mlisp ,(remove nil
+                                    `(,(getenv "MLISP")
+                                      ,@(when quicklisp-path `("-L" ,quicklisp-path)))))))
+
+    (when (getenv "ALISP_SMP")
+      (add-to-list 'slime-lisp-implementations
+                   `(alisp-smp ,(remove nil
+                                        `(,(getenv "ALISP_SMP")
+                                          ,@(when quicklisp-path `("-L" ,quicklisp-path)))))))
+
+    (when (getenv "MLISP_SMP")
+      (add-to-list 'slime-lisp-implementations
+                   `(mlisp-smp ,(remove nil
+                                        `(,(getenv "MLISP_SMP")
+                                          ,@(when quicklisp-path `("-L" ,quicklisp-path)))))))
+
+    (when (file-exists-p sbcl)
+      (add-to-list 'slime-lisp-implementations
+                   (if quicklisp-path
+                       `(sbcl (,sbcl "--load" ,quicklisp-path))
+                     `(sbcl (,sbcl "--noinform")))))
+
+    (when (file-exists-p ccl)
+      (add-to-list 'slime-lisp-implementations
+                   (if quicklisp-path
+                       `(ccl (,ccl "--load" ,quicklisp-path))
+                     `(ccl (,ccl)))))
+
+    (when (file-exists-p ecl)
+      (add-to-list 'slime-lisp-implementations
+                   (if quicklisp-path
+                       `(ecl (,ecl "-load" ,quicklisp-path))
+                     `(ecl (,ecl))))))
+
+  (map! (:map slime-db-mode-map
+         :n "gr" #'slime-db-restart-frame)
+        (:map slime-inspector-mode-map
+         :n "gb" #'slime-inspector-pop
+         :n "gr" #'slime-inspector-reinspect
+         :n "gR" #'slime-inspector-fetch-all
+         :n "K"  #'slime-inspector-describe-inspectee)
+        (:map slime-xref-mode-map
+         :n "gr" #'slime-recompile-xref
+         :n "gR" #'slime-recompile-all-xrefs)
+        (:map lisp-mode-map
+         :n "gb" #'slime-pop-find-definition-stack)
+
+        (:localleader
+         :map lisp-mode-map
+         :desc "slime"          "'" #'slime
+         :desc "slime (ask)"    ";" (cmd!! #'slime '-)
+         :desc "Expand macro" "m" #'macrostep-expand
+         (:prefix ("c" . "compile")
+          :desc "Compile file"          "c" #'slime-compile-file
+          :desc "Compile/load file"     "C" #'slime-compile-and-load-file
+          :desc "Compile toplevel form" "f" #'slime-compile-defun
+          :desc "Load file"             "l" #'slime-load-file
+          :desc "Remove notes"          "n" #'slime-remove-notes
+          :desc "Compile region"        "r" #'slime-compile-region)
+         (:prefix ("e" . "evaluate")
+          :desc "Evaluate buffer"     "b" #'slime-eval-buffer
+          :desc "Evaluate last"       "e" #'slime-eval-last-expression
+          :desc "Evaluate/print last" "E" #'slime-eval-print-last-expression
+          :desc "Evaluate defun"      "f" #'slime-eval-defun
+          :desc "Undefine function"   "F" #'slime-undefine-function
+          :desc "Evaluate region"     "r" #'slime-eval-region)
+         (:prefix ("g" . "goto")
+          :desc "Go back"              "b" #'slime-pop-find-definition-stack
+          :desc "Go to"                "d" #'slime-edit-definition
+          :desc "Go to (other window)" "D" #'slime-edit-definition-other-window
+          :desc "Next note"            "n" #'slime-next-note
+          :desc "Previous note"        "N" #'slime-previous-note
+          :desc "Next sticker"         "s" #'slime-stickers-next-sticker
+          :desc "Previous sticker"     "S" #'slime-stickers-prev-sticker)
+         (:prefix ("h" . "help")
+          :desc "Who calls"               "<" #'slime-who-calls
+          :desc "Calls who"               ">" #'slime-calls-who
+          :desc "Lookup format directive" "~" #'hyperspec-lookup-format
+          :desc "Lookup reader macro"     "#" #'hyperspec-lookup-reader-macro
+          :desc "Apropos"                 "a" #'slime-apropos
+          :desc "Who binds"               "b" #'slime-who-binds
+          :desc "Disassemble symbol"      "d" #'slime-disassemble-symbol
+          :desc "Describe symbol"         "h" #'slime-describe-symbol
+          :desc "HyperSpec lookup"        "H" #'slime-hyperspec-lookup
+          :desc "Who macro-expands"       "m" #'slime-who-macroexpands
+          :desc "Apropos package"         "p" #'slime-apropos-package
+          :desc "Who references"          "r" #'slime-who-references
+          :desc "Who specializes"         "s" #'slime-who-specializes
+          :desc "Who sets"                "S" #'slime-who-sets)
+         (:prefix ("r" . "repl")
+          :desc "Clear REPL"         "c" #'slime-repl-clear-repl
+          :desc "Quit connection"    "q" #'slime-quit-lisp
+          :desc "Restart connection" "r" #'slime-restart-inferior-lisp
+          :desc "Sync REPL"          "s" #'slime-repl-sync)
+         (:prefix ("s" . "stickers")
+          :desc "Toggle breaking stickers" "b" #'slime-stickers-toggle-break-on-stickers
+          :desc "Clear defun stickers"     "c" #'slime-stickers-clear-defun-stickers
+          :desc "Clear buffer stickers"    "C" #'slime-stickers-clear-buffer-stickers
+          :desc "Fetch stickers"           "f" #'slime-stickers-fetch
+          :desc "Replay stickers"          "r" #'slime-stickers-replay
+          :desc "Add/remove sticker"       "s" #'slime-stickers-dwim)
+         (:prefix ("t" . "trace")
+          :desc "Toggle"         "t" #'slime-toggle-trace-fdefinition
+          :desc "Toggle (fancy)" "T" #'slime-toggle-fancy-trace
+          :desc "Untrace all"    "u" #'slime-untrace-all)))
+
+  (when (featurep! :editor evil +everywhere)
+    (add-hook 'slime-mode-hook #'evil-normalize-keymaps)))
+#+end_src
+
+*** slime-company
+
+#+begin_src emacs-lisp
+(use-package! slime-company
+  :after (slime company)
+  :init (slime-setup '(slime-fancy slime-company slime-fuzzy
+                                   slime-asdf slime-banner slime-xref-browser slime-scratch
+                                   slime-trace-dialog slime-mdot-fu))
+  :config
+  (setq slime-company-completion 'fuzzy
+        slime-company-after-completion 'slime-company-just-one-space)
+  (define-key company-active-map (kbd "\C-n") 'company-select-next)
+  (define-key company-active-map (kbd "\C-p") 'company-select-previous)
+  (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
+  (define-key company-active-map (kbd "M-.") 'company-show-location))
+#+end_src
+
+** Rust
+
+TODO: need more work and test ...
+
+#+begin_src emacs-lisp
+(after! rustic
+  (setq rustic-spinner-type 'half-circle
+        lsp-rust-analyzer-cargo-watch-command "clippy"
+        ;; lsp-eldoc-render-all t
+        lsp-rust-analyzer-server-display-inlay-hints t))
+#+end_src
