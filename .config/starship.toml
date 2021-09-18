@@ -33,7 +33,7 @@ style = "bold blue"
 
 [hostname]
 ssh_only = false
-format = "[@$hostname](bold dimmed green) "
+format = "[@$hostname](bold dimmed grey) "
 
 [status]
 style = "bg:blue"
@@ -45,7 +45,7 @@ disabled = false
 disabled = true
 
 [username]
-style_user = "yellow bold"
+style_user = "blue bold"
 style_root = "white bold"
 format = "[$user]($style) "
 disabled = false
