@@ -409,3 +409,23 @@ Version 2017-11-10"
 
 ;;;; org-mode Agenda
 (setq org-agenda-files '("~/org/agenda/"))
+
+;;;; calendar
+(setq calendar-month-name-array         ; Month
+      ["January" "February" "March"     "April"   "May"      "June"
+       "July"    "August"   "September" "October" "November" "December"]
+
+      calendar-day-name-array           ; Week days
+      ["Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday"]
+
+      calendar-week-start-day        ; First day of the week, 0:Sunday, 1:Monday
+      1)
+
+(defun open-calendar ()
+  (interactive)
+  (cfw:open-calendar-buffer
+   :contents-sources
+   (list
+    (cfw:org-create-source "Orange")
+    (cfw:ical-create-source "中国节假日" "https://calendar.google.com/calendar/ical/zh-cn.china%23holiday%40group.v.calendar.google.com/public/basic.ics" "Red")
+    (cfw:ical-create-source "Holidays in Australia" "https://calendar.google.com/calendar/ical/zh-cn.australian%23holiday%40group.v.calendar.google.com/public/basic.ics" "Blue"))))
