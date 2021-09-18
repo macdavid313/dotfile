@@ -1,5 +1,13 @@
 #+TITLE: gty's dotfiles (configurations)
 
+* Install or Migrate
+
+#+begin_src sh
+git clone --bare git@github.com:macdavid313/dotfiles.git $HOME/dotfiles
+
+git --git-dir=$HOME/dotfiles --work-tree=$HOME checkout
+#+end_src
+
 * Configurations
 
 + [[https://github.com/macdavid313/dotfiles/blob/master/.config/starship.toml][starship.toml]]
@@ -7,9 +15,17 @@
 + [[https://github.com/macdavid313/dotfiles/blob/master/.zshrc][.zshrc]]
   - Z shell (do you mean the name came from =Zhong Shao=?)
   - [[https://ohmyz.sh/][Oh My Zsh]]
++ [[https://github.com/macdavid313/dotfiles/tree/master/.doom.d][.doom.d]]
+  - [[https://github.com/hlissner/doom-emacs][Doom Emacs]]
 + [[https://github.com/macdavid313/dotfiles/tree/master/.local/bin][.local/bin/]]
   - clock
   - kernel
   - memory
   - upt
   - volume
+
+* References
+
++ [[https://www.geeksforgeeks.org/bare-repositories-in-git/][Bare Repositories in Git]]
++ [[https://www.youtube.com/watch?v=tBoLDpTWVOM][YouTube - Git Bare Repository - A Better Way To Manage Dotfiles]]
++ [[https://gitlab.com/dwt1/dotfiles][GitLab - DT’s Dotfiles]]
