@@ -819,7 +819,8 @@ All files are synchronised through iCloud and shared with =beorg= app on my iPho
 
 #+begin_src emacs-lisp
 (after! org
-  (setq org-agenda-files '("~/org/agenda/")))
+  (setq org-agenda-files '("~/org/agenda/")
+        org-log-done 'time))
 #+end_src
 
 *** Tables
