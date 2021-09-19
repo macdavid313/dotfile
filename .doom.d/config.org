@@ -799,16 +799,18 @@ I really like org mode, and I am still learning it.
 *** org-roam v2
 
 #+begin_src emacs-lisp
-(setq org-roam-directory "~/org/roam")
+(after! org
+  (setq org-roam-directory "~/org/roam"))
 #+end_src
 
 *** org-journal
 
 #+begin_src emacs-lisp
-(setq org-journal-dir "~/org/journal"
-      org-journal-date-prefix "#+TITLE: "
-      org-journal-time-prefix "* "
-      org-journal-file-format "%Y-%m-%d.org")
+(after! org
+  (setq org-journal-dir "~/org/journal"
+        org-journal-date-prefix "#+TITLE: "
+        org-journal-time-prefix "* "
+        org-journal-file-format "%Y-%m-%d.org"))
 #+end_src
 
 *** Agenda
@@ -816,7 +818,8 @@ I really like org mode, and I am still learning it.
 All files are synchronised through iCloud and shared with =beorg= app on my iPhone and other devices.
 
 #+begin_src emacs-lisp
-(setq org-agenda-files '("~/org/agenda/"))
+(after! org
+  (setq org-agenda-files '("~/org/agenda/")))
 #+end_src
 
 *** Tables
