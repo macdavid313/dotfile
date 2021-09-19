@@ -77,7 +77,15 @@ My current desktop is macOS. I use Emacs in the terminal (/iTerm2/) almost exclu
 + Emacs theme: =doom-xcode=
 
 #+begin_src emacs-lisp
-(setq doom-themme 'doom-xcode)
+(setq doom-theme 'doom-xcode)
+#+end_src
+
+** Font Face
+
+#+begin_src emacs-lisp
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 16)
+      doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 28)
+      doom-serif-font (font-spec :family "Noto Serif CJK SC"))
 #+end_src
 
 ** Open URL in a new buffer
