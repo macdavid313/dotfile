@@ -808,6 +808,38 @@ I really like org mode, and I am still learning it.
 (setq org-indent-mode-turns-on-hiding-stars nil)
 #+end_src
 
+*** Babel
+
+#+begin_quote
+Babel is Org-mode's ability to execute source code within Org-mode documents.
+#+end_quote
+
+
+**** Common Lisp
+
+Doom Emacs somehow configures =org-babel-lisp-eval= variable to be =sly-eval=. I'm changing it back to the default:
+
+#+begin_src emacs-lisp
+(setq org-babel-lisp-eval-fn 'slime-eval)
+#+end_src
+
+**** Loaded languages
+
+#+begin_src emacs-lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((dot . t)
+   (emacs-lisp . t)
+   (gnuplot . t)
+   (latex . t)
+   (ledger . t)
+   (octave . t)
+   (python . t)
+   (sh . t)
+   (sql . t)
+   (sqlite . t)))
+#+end_src
+
 *** org-roam v2
 
 #+begin_src emacs-lisp
