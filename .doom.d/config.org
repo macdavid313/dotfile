@@ -1009,56 +1009,41 @@ People at Franz tend to use =.cl= for lisp file extension.
       ;; buffers are meant to be displayed with sufficient vertical space.
       ("^\\*slime-\\(?:db\\|inspector\\)" :ignore t)))
 
-  (let* ((lisp-home (file-name-as-directory (getenv "LISP")))
-         (sbcl (concat lisp-home "sbcl/bin/sbcl"))
-         (ccl (concat lisp-home "ccl/lx86cl64"))
-         (ecl (concat lisp-home "ecl/bin/ecl"))
-         (quicklisp-home (concat (file-name-as-directory (getenv "HOME")) "quicklisp"))
-         (quicklisp-path (when (file-exists-p quicklisp-home)
-                           (concat (file-name-as-directory quicklisp-home)
-                                   "setup.lisp"))))
+  (setq quicklisp-home (concat (file-name-as-directory (getenv "HOME")) "quicklisp"))
+  (setq quicklisp-path (when (file-exists-p quicklisp-home)
+                         (concat (file-name-as-directory quicklisp-home)
+                                 "setup.lisp")))
 
-    (when (getenv "ALISP")
-      (add-to-list 'slime-lisp-implementations
-                   `(alisp ,(remove nil
-                                    `(,(getenv "ALISP")
-                                      ,@(when quicklisp-path `("-L" ,quicklisp-path)))))))
+  (cl-loop for (lisp . env)
+           in '((alisp . "ALISP") (mlisp . "MLISP") (alisp-smp . "ALISP_SMP") (mlisp-smp . "MLISP_SMP"))
+           when (getenv env)
+           do (add-to-list 'slime-lisp-implementations
+                           `(',lisp ,(remove nil
+                                             `(,(getenv env) ,@(when quicklisp-path `("-L" ,quicklisp-path)))))))
 
-    (when (getenv "MLISP")
-      (add-to-list 'slime-lisp-implementations
-                   `(mlisp ,(remove nil
-                                    `(,(getenv "MLISP")
-                                      ,@(when quicklisp-path `("-L" ,quicklisp-path)))))))
+  (when (getenv "LISP")
+    (let* ((lisp-home (file-name-as-directory (getenv "LISP")))
+           (sbcl (concat lisp-home "sbcl/bin/sbcl"))
+           (ccl (concat lisp-home "ccl/lx86cl64"))
+           (ecl (concat lisp-home "ecl/bin/ecl")))
 
-    (when (getenv "ALISP_SMP")
-      (add-to-list 'slime-lisp-implementations
-                   `(alisp-smp ,(remove nil
-                                        `(,(getenv "ALISP_SMP")
-                                          ,@(when quicklisp-path `("-L" ,quicklisp-path)))))))
+      (when (file-exists-p sbcl)
+        (add-to-list 'slime-lisp-implementations
+                     (if quicklisp-path
+                         `(sbcl (,sbcl "--noinform" "--load" ,quicklisp-path))
+                       `(sbcl (,sbcl "--noinform")))))
 
-    (when (getenv "MLISP_SMP")
-      (add-to-list 'slime-lisp-implementations
-                   `(mlisp-smp ,(remove nil
-                                        `(,(getenv "MLISP_SMP")
-                                          ,@(when quicklisp-path `("-L" ,quicklisp-path)))))))
+      (when (file-exists-p ccl)
+        (add-to-list 'slime-lisp-implementations
+                     (if quicklisp-path
+                         `(ccl (,ccl "--load" ,quicklisp-path))
+                       `(ccl (,ccl)))))
 
-    (when (file-exists-p sbcl)
-      (add-to-list 'slime-lisp-implementations
-                   (if quicklisp-path
-                       `(sbcl (,sbcl "--load" ,quicklisp-path))
-                     `(sbcl (,sbcl "--noinform")))))
-
-    (when (file-exists-p ccl)
-      (add-to-list 'slime-lisp-implementations
-                   (if quicklisp-path
-                       `(ccl (,ccl "--load" ,quicklisp-path))
-                     `(ccl (,ccl)))))
-
-    (when (file-exists-p ecl)
-      (add-to-list 'slime-lisp-implementations
-                   (if quicklisp-path
-                       `(ecl (,ecl "-load" ,quicklisp-path))
-                     `(ecl (,ecl))))))
+      (when (file-exists-p ecl)
+        (add-to-list 'slime-lisp-implementations
+                     (if quicklisp-path
+                         `(ecl (,ecl "-load" ,quicklisp-path))
+                       `(ecl (,ecl)))))))
 
   (map! (:map slime-db-mode-map
          :n "gr" #'slime-db-restart-frame)
