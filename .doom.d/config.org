@@ -1018,7 +1018,7 @@ People at Franz tend to use =.cl= for lisp file extension.
            in '((alisp . "ALISP") (mlisp . "MLISP") (alisp-smp . "ALISP_SMP") (mlisp-smp . "MLISP_SMP"))
            when (getenv env)
            do (add-to-list 'slime-lisp-implementations
-                           `(',lisp ,(remove nil
+                           `(,lisp ,(remove nil
                                              `(,(getenv env) ,@(when quicklisp-path `("-L" ,quicklisp-path)))))))
 
   (when (getenv "LISP")
