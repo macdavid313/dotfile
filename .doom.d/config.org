@@ -796,6 +796,12 @@ It’s nice to see ANSI colour codes displayed. However, until Emacs 28 it’s n
 
 I really like org mode, and I am still learning it.
 
+*** Leading stars
+
+#+begin_src emacs-lisp
+(setq org-indent-mode-turns-on-hiding-stars nil)
+#+end_src
+
 *** org-roam v2
 
 #+begin_src emacs-lisp
