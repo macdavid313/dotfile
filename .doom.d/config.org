@@ -4,7 +4,8 @@
 
 * Step /zero/
 
-Make this file run (slightly) faster with lexical binding (see this [[https://nullprogram.com/blog/2016/12/22/][blog post]] for more info).
+Make this file run (slightly) faster with lexical binding (see this [[https://nullprogram.com/blog/2016/12/22/][blog post]]
+for more info).
 
 #+begin_src emacs-lisp :comments no
 ;;; config.el -*- lexical-binding: t; -*-
@@ -69,7 +70,8 @@ These configurations talk for themselves.
 
 ** Theme
 
-My current desktop is macOS. I use Emacs in the terminal (/iTerm2/) almost exclusively, and I've found this combination is good enough to me:
+My current desktop is macOS. I use Emacs in the terminal (/iTerm2/) almost
+exclusively, and I've found this combination is good enough to me:
 
 + Desktop background: =Solar Gradients=
 + Terminal theme: =Tomorrow Night Bright=
@@ -107,11 +109,13 @@ Version 2017-11-10"
 
 ** Helper macros
 
-- ~load!~ for loading external ~*.el~ files relative to this one
-- ~use-package!~ for configuring packages
-- ~after!~ for running code after a package has loaded
-- ~add-load-path!~ for adding directories to the ~load-path~, relative to this file. Emacs searches the ~load-path~ when you load packages with ~require~ or ~use-package~.
-- ~map!~ for binding new keys
++ ~load!~ for loading external ~*.el~ files relative to this one
++ ~use-package!~ for configuring packages
++ ~after!~ for running code after a package has loaded
++ ~add-load-path!~ for adding directories to the ~load-path~, relative to this
+  file. Emacs searches the ~load-path~ when you load packages with ~require~ or
+  ~use-package~.
++ ~map!~ for binding new keys
 
 ** Mouse butttons
 
@@ -139,7 +143,8 @@ Version 2017-11-10"
 
 ** Doom Dashboard
 
-All the useful commands are not really useful to me anymore, so I choose to disable them.
+All the useful commands are not really useful to me anymore, so I choose to
+disable them.
 
 #+begin_src emacs-lisp
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
@@ -157,7 +162,8 @@ Let’s make this popup a bit faster
 (setq which-key-idle-delay 0.5) ;; I need the help, I really do
 #+end_src
 
-I also think that having =evil-= appear in so many popups is a bit too verbose, let’s change that, and do a few other similar tweaks while we’re at it.
+I also think that having =evil-= appear in so many popups is a bit too verbose,
+let’s change that, and do a few other similar tweaks while we’re at it.
 
 #+begin_src emacs-lisp
 (setq which-key-allow-multiple-replacements t)
@@ -182,9 +188,11 @@ I also think that having =evil-= appear in so many popups is a bit too verbose, 
 
 ** Very large files
 
-The very large files mode loads large files in chunks, allowing one to open ridiculously large files.
+The very large files mode loads large files in chunks, allowing one to open
+ridiculously large files.
 
-To make VLF available without delaying startup, we'll just load it in quiet moments.
+To make VLF available without delaying startup, we'll just load it in quiet
+moments.
 
 #+begin_src emacs-lisp
 (use-package! vlf-setup
@@ -193,7 +201,8 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 
 ** Eros
 
-This package enables the very nice inline evaluation with =gr= and =gR=. The prefix could be slightly nicer though.
+This package enables the very nice inline evaluation with =gr= and =gR=. The
+prefix could be slightly nicer though.
 
 #+begin_src emacs-lisp
 (setq eros-eval-result-prefix "⟹ ") ; default =>
@@ -209,11 +218,14 @@ This package enables the very nice inline evaluation with =gr= and =gR=. The pre
 
 ** Magit
 
-Magit is absolutely great by default. The diffs don't get any syntax-highlighting-love though which is a bit sad. Thankfully [[https://github.com/dandavison/magit-delta][dandavison/magit-delta]] exists, which we can put to use.
+Magit is absolutely great by default. The diffs don't get any
+syntax-highlighting-love though which is a bit sad. Thankfully
+[[https://github.com/dandavison/magit-delta][dandavison/magit-delta]] exists, which we can put to use.
 
 ** Company
 
-It’s nice to have completions almost all the time, in my opinion. Key strokes are just waiting to be saved!
+It’s nice to have completions almost all the time, in my opinion. Key strokes
+are just waiting to be saved!
 
 #+begin_src emacs-lisp
 (after! company
@@ -223,7 +235,8 @@ It’s nice to have completions almost all the time, in my opinion. Key strokes 
   (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
 #+end_src
 
-Now, the improvements from precedent are mostly from remembering history, so let’s improve that memory.
+Now, the improvements from precedent are mostly from remembering history, so
+let’s improve that memory.
 
 #+begin_src emacs-lisp
 (setq-default history-length 1000)
@@ -252,10 +265,12 @@ Ispell is nice, let’s have it in text, markdown, and GFM.
 (setq projectile-sort-order 'recentf)
 #+end_src
 
-Looking at documentation via ~SPC h f~ and ~SPC h v~ and looking at the source can add package src directories to projectile. This isn’t desirable in my opinion.
+Looking at documentation via ~SPC h f~ and ~SPC h v~ and looking at the source
+can add package src directories to projectile. This isn’t desirable in my
+opinion.
 
 #+begin_src emacs-lisp
-(setq projectile-ignored-projects '("~/" "/tmp" "~/.emacs.d/.local/straight/repos/"))
+(setq projectile-ignored-projects '("~/" "/tmp" "~/.emacs.d/" "~/.emacs.d/.local/straight/repos/"))
 (defun projectile-ignored-project-function (filepath)
   "Return t if FILEPATH is within any of `projectile-ignored-projects'"
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
@@ -306,15 +321,19 @@ Looking at documentation via ~SPC h f~ and ~SPC h v~ and looking at the source c
 
 ** Emojify
 
-For starters, twitter’s emojis look nicer than emoji-one. Other than that, this is pretty great OOTB 😀.
+For starters, twitter’s emojis look nicer than emoji-one. Other than that, this
+is pretty great OOTB 😀.
 
 #+begin_src emacs-lisp
 (setq emojify-emoji-set "twemoji-v2")
 #+end_src
 
-One minor annoyance is the use of emojis over the default character when the default is actually preferred. This occurs with overlay symbols I use in Org mode, such as checkbox state, and a few other miscellaneous cases.
+One minor annoyance is the use of emojis over the default character when the
+default is actually preferred. This occurs with overlay symbols I use in Org
+mode, such as checkbox state, and a few other miscellaneous cases.
 
-We can accommodate our preferences by deleting those entries from the emoji hash table
+We can accommodate our preferences by deleting those entries from the emoji hash
+table
 
 #+begin_src emacs-lisp
 (defvar emojify-disabled-emojis
@@ -335,7 +354,9 @@ We can accommodate our preferences by deleting those entries from the emoji hash
 
 ** Keycast
 
-For some reason, I find myself demoing Emacs every now and then. Showing what keyboard stuff I’m doing on-screen seems helpful. While screenkey does exist, having something that doesn’t cover up screen content is nice.
+For some reason, I find myself demoing Emacs every now and then. Showing what
+keyboard stuff I’m doing on-screen seems helpful. While screenkey does exist,
+having something that doesn’t cover up screen content is nice.
 
 #+begin_src emacs-lisp
 (use-package! keycast
@@ -396,9 +417,11 @@ For some reason, I find myself demoing Emacs every now and then. Showing what ke
       (propertize (file-size-human-readable size) 'face (list :foreground color)))))
 #+end_src
 
-** ALl the icons
+** All the icons
 
-In some files, =^L= appears as a page break character. This isn’t that visually appealing, and Steve Purcell has been nice enough to make a package to display these as horizontal rules.
+In some files, =^L= appears as a page break character. This isn’t that visually
+appealing, and Steve Purcell has been nice enough to make a package to display
+these as horizontal rules.
 
 #+begin_src emacs-lisp
 (use-package! page-break-lines
@@ -414,7 +437,8 @@ In some files, =^L= appears as a page break character. This isn’t that visuall
 
 ** Treemacs
 
-Quite often there are superfluous files I’m not that interested in. There’s no good reason for them to take up space. Let’s add a mechanism to ignore them.
+Quite often there are superfluous files I’m not that interested in. There’s no
+good reason for them to take up space. Let’s add a mechanism to ignore them.
 
 #+begin_src emacs-lisp
 (after! treemacs
@@ -679,7 +703,8 @@ Yes, RSS feeds are still a thing. Instead of using some "AI-curated content" pla
 
 *** File templates
 
-For some file types, we overwrite defaults in the snippets directory, others need to have a template assigned.
+For some file types, we overwrite defaults in the snippets directory, others
+need to have a template assigned.
 
 #+begin_src emacs-lisp
 (set-file-template! "\\.tex$" :trigger "__" :mode 'latex-mode)
@@ -689,7 +714,9 @@ For some file types, we overwrite defaults in the snippets directory, others nee
 
 ** Plaintext
 
-It’s nice to see ANSI colour codes displayed. However, until Emacs 28 it’s not possible to do this without modifying the buffer, so let’s condition this block on that.
+It’s nice to see ANSI colour codes displayed. However, until Emacs 28 it’s not
+possible to do this without modifying the buffer, so let’s condition this block
+on that.
 
 #+begin_src emacs-lisp
 ;; (after! text-mode
@@ -697,6 +724,16 @@ It’s nice to see ANSI colour codes displayed. However, until Emacs 28 it’s n
 ;;              ;; Apply ANSI color codes
 ;;              (with-silent-modifications
 ;;                (ansi-color-apply-on-region (point-min) (point-max) t))))
+#+end_src
+
+By default, visual-line-mode is turned on, and auto-fill-mode off by a hook.
+However this messes with tables in Org-mode, and other plaintext files (e.g.
+markdown, \LaTeX) so I’ll turn it off for this, and manually enable it for more
+specific modes as desired.
+
+#+begin_src emacs-lisp
+(remove-hook 'text-mode-hook #'visual-line-mode)
+(add-hook 'text-mode-hook #'auto-fill-mode)
 #+end_src
 
 ** Org
@@ -722,14 +759,6 @@ Babel is Org-mode's ability to execute source code within Org-mode documents.
 #+end_quote
 
 
-**** Common Lisp
-
-Doom Emacs somehow configures =org-babel-lisp-eval= variable to be =sly-eval=. I'm changing it back to the default:
-
-#+begin_src emacs-lisp
-(setq org-babel-lisp-eval-fn 'slime-eval)
-#+end_src
-
 **** Loaded languages
 
 #+begin_src emacs-lisp
@@ -747,11 +776,30 @@ Doom Emacs somehow configures =org-babel-lisp-eval= variable to be =sly-eval=. I
    (sqlite . t)))
 #+end_src
 
-*** org-roam v2
+**** Common Lisp
+
+Doom Emacs somehow configures =org-babel-lisp-eval= variable to be =sly-eval=.
+I'm changing it back to the default:
+
+#+begin_src emacs-lisp
+(setq org-babel-lisp-eval-fn 'slime-eval)
+#+end_src
+
+*** org-roam (v2)
 
 #+begin_src emacs-lisp
 (after! org
   (setq org-roam-directory "~/org/roam"))
+#+end_src
+
+**** Graphing
+
+#+begin_quote
+You may also choose to use neato in place of dot, which generates a more compact graph layout.
+#+end_quote
+
+#+begin_src emacs-lisp
+(setq org-roam-graph-executable "neato")
 #+end_src
 
 *** org-journal
@@ -766,7 +814,8 @@ Doom Emacs somehow configures =org-babel-lisp-eval= variable to be =sly-eval=. I
 
 *** Agenda
 
-All files are synchronised through iCloud and shared with =beorg= app on my iPhone and other devices.
+All files are synchronised through iCloud and shared with =beorg= app on my
+iPhone and other devices.
 
 #+begin_src emacs-lisp
 (after! org
@@ -776,7 +825,9 @@ All files are synchronised through iCloud and shared with =beorg= app on my iPho
 
 *** Tables
 
-Org tables aren’t the prettiest thing to look at. This package is supposed to redraw them in the buffer with box-drawing characters. Sounds like an improvement to me! We’ll make use of this with =writeroom-mode=.
+Org tables aren’t the prettiest thing to look at. This package is supposed to
+redraw them in the buffer with box-drawing characters. Sounds like an
+improvement to me! We’ll make use of this with =writeroom-mode=.
 
 #+begin_src emacs-lisp
 (use-package! org-pretty-table
@@ -785,7 +836,9 @@ Org tables aren’t the prettiest thing to look at. This package is supposed to 
 
 *** Emphasis markers
 
-While =org-hide-emphasis-markers= is very nice, it can sometimes make edits which occur at the border a bit more fiddley. We can improve this situation without sacrificing visual amenities with the =org-appear= package.
+While =org-hide-emphasis-markers= is very nice, it can sometimes make edits
+which occur at the border a bit more fiddley. We can improve this situation
+without sacrificing visual amenities with the =org-appear= package.
 
 #+begin_src emacs-lisp
 (use-package! org-appear
@@ -801,7 +854,8 @@ While =org-hide-emphasis-markers= is very nice, it can sometimes make edits whic
 
 *** Heading structure
 
-Speaking of headlines, a nice package for viewing and managing the heading structure has come to my attention.
+Speaking of headlines, a nice package for viewing and managing the heading
+structure has come to my attention.
 
 #+begin_src emacs-lisp
 (use-package! org-ol-tree
