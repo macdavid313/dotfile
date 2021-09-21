@@ -737,8 +737,20 @@ specific modes as desired.
 #+end_src
 
 ** Org
-
 I really like org mode, and I am still learning it.
+
+*** Customise capture todo file
+
+#+begin_src emacs-lisp
+(setq +org-capture-todo-file "agenda/inbox.org")
+#+end_src
+
+*** Refiling
+Save org buffers after refiling.
+
+#+begin_src emacs-lisp
+(advice-add 'org-refile :after 'org-save-all-org-buffers)
+#+end_src
 
 *** Leading stars
 
@@ -758,7 +770,6 @@ I really like org mode, and I am still learning it.
 Babel is Org-mode's ability to execute source code within Org-mode documents.
 #+end_quote
 
-
 **** Loaded languages
 
 #+begin_src emacs-lisp
@@ -777,7 +788,6 @@ Babel is Org-mode's ability to execute source code within Org-mode documents.
 #+end_src
 
 **** Common Lisp
-
 Doom Emacs somehow configures =org-babel-lisp-eval= variable to be =sly-eval=.
 I'm changing it back to the default:
 
