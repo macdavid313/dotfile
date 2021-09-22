@@ -967,17 +967,11 @@ People at Franz tend to use =.cl= for lisp file extension.
 *** Documentations
 
 #+begin_src emacs-lisp
-(let ((hyperspec-root (file-name-as-directory (concat (getenv "HOME") "/lisp/HyperSpec"))))
-  (when (file-exists-p hyperspec-root)
-    (setq hyperspec-root (concat "file://" hyperspec-root))
-    (setq common-lisp-hyperspec-root hyperspec-root
-          common-lisp-hyperspec-symbol-table (concat hyperspec-root "Data/Map_Sym.txt")
-          common-lisp-hyperspec-issuex-table (concat hyperspec-root "Data/Map_IssX.txt")))
-  (advice-add 'hyperspec-lookup
-              :around
-              (lambda (orig-fun &rest args)
-                (setq-local browse-url-browser-function 'eww-browse-url)
-                (apply orig-fun args))))
+(advice-add 'hyperspec-lookup
+            :around
+            (lambda (orig-fun &rest args)
+              (setq-local browse-url-browser-function 'eww-browse-url)
+              (apply orig-fun args)))
 
 (defun acl-doc ()
   (interactive)
@@ -1007,13 +1001,12 @@ People at Franz tend to use =.cl= for lisp file extension.
       :definition #'slime-edit-definition
       :documentation #'slime-describe-symbol))
   :config
-  (when (getenv "HYPERSPEC_ROOT")
-    (let* ((hyperspec-root (file-name-as-directory (getenv "HYPERSPEC_ROOT")))
-           (hyperspec-symbol-table (concat hyperspec-root "Data/Map_Sym.txt"))
-           (hyperspec-issuex-table (concat hyperspec-root "Data/Map_IssX.txt")))
+  (let ((hyperspec-root (file-name-as-directory (concat (getenv "HOME") "/lisp/HyperSpec"))))
+    (when (file-exists-p hyperspec-root)
+      (setq hyperspec-root (concat "file://" hyperspec-root))
       (setq common-lisp-hyperspec-root hyperspec-root
-            common-lisp-hyperspec-symbol-table hyperspec-symbol-table
-            common-lisp-hyperspec-issuex-table hyperspec-issuex-table)))
+            common-lisp-hyperspec-symbol-table (concat hyperspec-root "Data/Map_Sym.txt")
+            common-lisp-hyperspec-issuex-table (concat hyperspec-root "Data/Map_IssX.txt"))))
 
   (setf slime-repl-history-file (concat doom-cache-dir "slime-repl-history")
         slime-kill-without-query-p t
