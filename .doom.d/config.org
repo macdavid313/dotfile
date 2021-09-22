@@ -815,11 +815,20 @@ You may also choose to use neato in place of dot, which generates a more compact
 *** org-journal
 
 #+begin_src emacs-lisp
-(after! org
+(setq org-journal-file-type 'weekly)
+(defun org-journal-file-header-func (time)
+  "Custom function to create journal header."
+  (concat
+   (pcase org-journal-file-type
+     (`daily "#+TITLE: Daily Journal\n#+STARTUP: showeverything")
+     (`weekly "#+TITLE: 周记 (Weekly Journal)\n#+STARTUP: folded") ; <- currently using weekly
+     (`monthly "#+TITLE: Monthly Journal\n#+STARTUP: folded")
+     (`yearly "#+TITLE: Yearly Journal\n#+STARTUP: folded"))))
+
+(after! org-journal
   (setq org-journal-dir "~/org/journal"
-        org-journal-date-prefix "#+TITLE: "
-        org-journal-time-prefix "* "
-        org-journal-file-format "%Y-%m-%d.org"))
+        org-journal-file-format "%Y-%m-%d.org"
+        org-journal-file-header 'org-journal-file-header-fun))
 #+end_src
 
 *** Agenda
@@ -958,20 +967,26 @@ People at Franz tend to use =.cl= for lisp file extension.
 *** Documentations
 
 #+begin_src emacs-lisp
-(when (getenv "CL_DOCUMENTATION")
-  (let* ((root (file-name-as-directory (getenv "CL_DOCUMENTATION")))
-         (acl-doc-root (file-name-as-directory (concat root "allegro")))
-         (cltl2-root (file-name-as-directory (concat root "cltl"))))
+(let ((hyperspec-root (file-name-as-directory (concat (getenv "HOME") "/lisp/HyperSpec"))))
+  (when (file-exists-p hyperspec-root)
+    (setq hyperspec-root (concat "file://" hyperspec-root))
+    (setq common-lisp-hyperspec-root hyperspec-root
+          common-lisp-hyperspec-symbol-table (concat hyperspec-root "Data/Map_Sym.txt")
+          common-lisp-hyperspec-issuex-table (concat hyperspec-root "Data/Map_IssX.txt")))
+  (advice-add 'hyperspec-lookup
+              :around
+              (lambda (orig-fun &rest args)
+                (setq-local browse-url-browser-function 'eww-browse-url)
+                (apply orig-fun args))))
 
-    (defun acl-doc ()
-      "Quickly access AllegroCL Manual"
-      (interactive)
-      (eww-open-file (concat acl-doc-root "contents.htm")))
+(defun acl-doc ()
+  (interactive)
+  (eww-browse-url "https://franz.com/support/documentation/current/doc/index.htm"))
 
-    (defun cltl2 ()
-      "Quickly access Common Lisp the Language 2nd Edition"
-      (interactive)
-      (eww-open-file (concat (file-name-as-directory (concat cltl2-root "clm")) "node1.html")))))
+(defun cltl2 ()
+  "Quickly access Common Lisp the Language 2nd Edition"
+  (interactive)
+  (eww-browse-url "https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/index.html"))
 
 (defun sbcl-doc ()
   "Quickly access SBCL Manual"
@@ -1034,7 +1049,7 @@ People at Franz tend to use =.cl= for lisp file extension.
            when (getenv env)
            do (add-to-list 'slime-lisp-implementations
                            `(,lisp ,(remove nil
-                                             `(,(getenv env) ,@(when quicklisp-path `("-L" ,quicklisp-path)))))))
+                                            `(,(getenv env) ,@(when quicklisp-path `("-L" ,quicklisp-path)))))))
 
   (when (getenv "LISP")
     (let* ((lisp-home (file-name-as-directory (getenv "LISP")))
