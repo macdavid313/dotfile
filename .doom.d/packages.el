@@ -63,3 +63,8 @@
   :pin "148aa124901ae598f69320e3dcada6325cdc2cf0")
 (package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree")
   :pin "207c748aa5fea8626be619e8c55bdb1c16118c25")
+
+;;;; org-roam-ui
+;;;; https://github.com/org-roam/org-roam-ui#installation
+(unpin! org-roam)
+(package! org-roam-ui)
