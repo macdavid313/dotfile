@@ -78,9 +78,9 @@ completions=(
 # Custom aliases may be added to ~/.oh-my-bash/custom/aliases/
 # Example format: aliases=(vagrant composer git-avh)
 # Add wisely, as too many aliases slow down shell startup.
-aliases=(
-  general
-)
+# aliases=(
+#   general
+# )
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-bash/plugins/*)
 # Custom plugins may be added to ~/.oh-my-bash/custom/plugins/
@@ -148,7 +148,6 @@ fi
 [ -f $HOME/.cargo/env ] && source "$HOME/.cargo/env" # Rust (Cargo)
 [ -f ~/.fzf.zsh ] && source ~/.fzf.bash # fzf
 [ ! -z $(command -v zoxide) ] && eval "$(zoxide init bash)" # a smarter cd command, https://github.com/ajeetdsouza/zoxide
-[ ! -z $(command -v starship) ] && eval "$(starship init bash)" # corss-shell prompt, https://starship.rs/
 
 ### CHANGE TITLE OF TERMINALS ###
 case ${TERM} in
@@ -270,3 +269,6 @@ alias mlisp-smp-repl="rlwrap $LISP/linuxamd64.64smp/mlisp -L $HOME/quicklisp/set
 alias sbcl-repl="rlwrap $LISP/sbcl/bin/sbcl --noinform --load $HOME/quicklisp/setup.lisp --eval '(require :sb-aclrepl)'"
 alias ccl-repl="rlwrap $LISP/ccl/lx86cl64 --load $HOME/quicklisp/setup.lisp"
 alias ecl-repl="rlwrap $LISP/ecl/bin/ecl --load $HOME/quicklisp/setup.lisp"
+
+# Starship Shell Prompt
+[ ! -z $(command -v starship) ] && eval "$(starship init bash)" # corss-shell prompt, https://starship.rs/
