@@ -271,4 +271,4 @@ alias ccl-repl="rlwrap $LISP/ccl/lx86cl64 --load $HOME/quicklisp/setup.lisp"
 alias ecl-repl="rlwrap $LISP/ecl/bin/ecl --load $HOME/quicklisp/setup.lisp"
 
 # Starship Shell Prompt
-[ ! -z $(command -v starship) ] && eval "$(starship init bash)" # corss-shell prompt, https://starship.rs/
+# [ ! -z $(command -v starship) ] && eval "$(starship init bash)" # corss-shell prompt, https://starship.rs/
