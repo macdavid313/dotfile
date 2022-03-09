@@ -272,3 +272,6 @@ alias ecl-repl="rlwrap $LISP/ecl/bin/ecl --load $HOME/quicklisp/setup.lisp"
 
 # Starship Shell Prompt
 # [ ! -z $(command -v starship) ] && eval "$(starship init bash)" # corss-shell prompt, https://starship.rs/
+
+# Customize Shell Prompt
+export PS1="\e[0;34m[\u@\h \W]\$ \e[m"
