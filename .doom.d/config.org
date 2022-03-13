@@ -802,6 +802,12 @@ I'm changing it back to the default:
   (setq org-roam-directory "~/org/roam"))
 #+end_src
 
+Setup Org-roam to run functions on file changes to maintain cache consistency.
+
+#+begin_src emacs-lisp
+(org-roam-db-autosync-mode)
+#+end_src
+
 **** Graphing
 
 #+begin_quote
