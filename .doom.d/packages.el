@@ -68,3 +68,7 @@
 ;;;; https://github.com/org-roam/org-roam-ui#installation
 (unpin! org-roam)
 (package! org-roam-ui)
+
+;;;; osm.el - OpenStreetMap viewer for Emacs
+;;;; https://github.com/minad/osm
+(package! osm)
