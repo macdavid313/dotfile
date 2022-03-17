@@ -317,6 +317,37 @@ opinion.
  :actions '(insert))
 #+end_src
 
+** Tramp
+
+#+begin_quote
+TRAMP (Transparent Remote Access, Multiple Protocols) is a package for editing
+remote files, similar to AngeFtp or efs. Whereas the others use FTP to connect
+to the remote host and to transfer the files, TRAMP uses a remote shell
+connection (rlogin, telnet, ssh). It can transfer the files using rcp or a
+similar program, or it can encode the file contents (using uuencode or base64)
+and transfer them right through the shell connection.
+#+end_quote
+
+When using =zsh=, I have to set the value for =tramp-terminal-type= variable ...
+
+#+begin_src emacs-lisp
+(setq tramp-terminal-type "tramp")
+#+end_src
+
+and also put this into a =~/.zprofile= file at the remote machine.
+
+#+begin_quote
+if [ $TERM = tramp ]; then
+        unset RPROMPT
+        unset RPS1
+        PS1="$ "
+        unsetopt zle
+        unsetopt rcs  # Inhibit loading of further config files
+fi
+#+end_quote
+
+see [[https://www.emacswiki.org/emacs/TrampMode#h5o-9][here]] for more details.
+
 * Visual
 
 ** Emojify
