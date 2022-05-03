@@ -117,7 +117,6 @@ export ALTERNATEEDITOR="vi"
 
 ### alias ###
 alias less=bat
-alias find=fd
 alias grep=rg
 alias emax="emacsclient -t -a ''"
 alias doom="$HOME/.emacs.d/bin/doom"
@@ -262,3 +261,7 @@ alias ecl-repl="rlwrap $LISP/ecl/bin/ecl --load $HOME/quicklisp/setup.lisp"
 
 ### load .profile if it exists ###
 [ -f $HOME/.profile ] && source $HOME/.profile
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
