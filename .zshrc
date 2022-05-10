@@ -239,15 +239,15 @@ alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
 alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
 
 ### youtube-dl ###
-alias yta-aac="youtube-dl --extract-audio --audio-format aac "
-alias yta-best="youtube-dl --extract-audio --audio-format best "
-alias yta-flac="youtube-dl --extract-audio --audio-format flac "
-alias yta-m4a="youtube-dl --extract-audio --audio-format m4a "
-alias yta-mp3="youtube-dl --extract-audio --audio-format mp3 "
-alias yta-opus="youtube-dl --extract-audio --audio-format opus "
-alias yta-vorbis="youtube-dl --extract-audio --audio-format vorbis "
-alias yta-wav="youtube-dl --extract-audio --audio-format wav "
-alias ytv-best="youtube-dl -f bestvideo+bestaudio "
+alias yta-aac="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format aac "
+alias yta-best="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format best "
+alias yta-flac="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format flac "
+alias yta-m4a="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format m4a "
+alias yta-mp3="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format mp3 "
+alias yta-opus="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format opus "
+alias yta-vorbis="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format vorbis "
+alias yta-wav="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format wav "
+alias ytv-best="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c -f bestvideo+bestaudio "
 
 ### Common Lisp ###
 export LISP=$HOME/lisp
