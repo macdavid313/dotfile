@@ -145,7 +145,7 @@ fi
 
 ### extra 'sauce' ###
 [ -f $HOME/.cargo/env ] && source "$HOME/.cargo/env" # Rust (Cargo)
-[ -f ~/.fzf.zsh ] && source ~/.fzf.bash # fzf
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash # fzf
 [ ! -z $(command -v zoxide) ] && eval "$(zoxide init bash)" # a smarter cd command, https://github.com/ajeetdsouza/zoxide
 
 ### CHANGE TITLE OF TERMINALS ###
