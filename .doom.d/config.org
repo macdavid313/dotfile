@@ -1068,7 +1068,7 @@ People at Franz tend to use =.cl= for lisp file extension.
 
   (setf slime-repl-history-file (concat doom-cache-dir "slime-repl-history")
         slime-kill-without-query-p t
-        slime-default-lisp 'sbcl
+        slime-default-lisp 'mlisp
         slime-protocol-version 'ignore
         slime-net-coding-system 'utf-8-unix
         slime-load-failed-fasl 'never
