@@ -12,7 +12,7 @@ export PATH=$PATH:$HOME/bin:/usr/local/bin:$HOME/.local/bin
 # Enable the subsequent settings only in interactive sessions
 case $- in
   *i*) ;;
-    *) return;;
+  *) return ;;
 esac
 
 # Path to your oh-my-bash installation.
@@ -119,7 +119,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 ### export ###
-export TERM="xterm-256color"                      # getting proper colors
+export TERM="xterm-256color" # getting proper colors
 export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
 export MANPATH="/usr/local/man:$MANPATH"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'" # "bat" as manpager
@@ -131,9 +131,9 @@ alias less=bat
 alias grep=rg
 alias emax="emacsclient -t -a ''"
 alias doom="$HOME/.emacs.d/bin/doom"
-alias config="git --git-dir=$HOME/dotfiles --work-tree=$HOME" # bare git repo alias for dotfiles
+alias config="git --git-dir=$HOME/dotfiles --work-tree=$HOME"                                       # bare git repo alias for dotfiles
 alias rr='curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash' # the terminal rickroll
-alias tb="nc termbin.com 9999" # termbin, https://termbin.com/
+alias tb="nc termbin.com 9999"                                                                      # termbin, https://termbin.com/
 
 if [ ! -z $(command -v prettyping) ]; then
   alias ping=prettyping # prettyping
@@ -144,16 +144,15 @@ if [ ! -z $(command -v ncdu) ]; then
 fi
 
 ### extra 'sauce' ###
-[ -f $HOME/.cargo/env ] && source "$HOME/.cargo/env" # Rust (Cargo)
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash # fzf
+[ -f $HOME/.cargo/env ] && source "$HOME/.cargo/env"        # Rust (Cargo)
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash                    # fzf
 [ ! -z $(command -v zoxide) ] && eval "$(zoxide init bash)" # a smarter cd command, https://github.com/ajeetdsouza/zoxide
-[ ! -z $(command -v starship) ] && eval "$(starship init bash)" # corss-shell prompt, https://starship.rs/
 
 ### CHANGE TITLE OF TERMINALS ###
 case ${TERM} in
-  xterm*|rxvt*|Eterm*|aterm|kterm|gnome*|alacritty|st|konsole*)
+  xterm* | rxvt* | Eterm* | aterm | kterm | gnome* | alacritty | st | konsole*)
     PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/\~}\007"'
-        ;;
+    ;;
   screen*)
     PROMPT_COMMAND='echo -ne "\033_${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/\~}\033\\"'
     ;;
@@ -164,46 +163,47 @@ SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
 
 function extract {
- if [ -z "$1" ]; then
+  if [ -z "$1" ]; then
     # display usage if no parameters given
     echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
     echo "       extract <path/file_name_1.ext> [path/file_name_2.ext] [path/file_name_3.ext]"
- else
-    for n in "$@"
-    do
-      if [ -f "$n" ] ; then
-          case "${n%,}" in
-            *.cbt|*.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar)
-                         tar xvf "$n"       ;;
-            *.lzma)      unlzma ./"$n"      ;;
-            *.bz2)       bunzip2 ./"$n"     ;;
-            *.cbr|*.rar)       unrar x -ad ./"$n" ;;
-            *.gz)        gunzip ./"$n"      ;;
-            *.cbz|*.epub|*.zip)       unzip ./"$n"       ;;
-            *.z)         uncompress ./"$n"  ;;
-            *.7z|*.arj|*.cab|*.cb7|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.pkg|*.rpm|*.udf|*.wim|*.xar)
-                         7z x ./"$n"        ;;
-            *.xz)        unxz ./"$n"        ;;
-            *.exe)       cabextract ./"$n"  ;;
-            *.cpio)      cpio -id < ./"$n"  ;;
-            *.cba|*.ace)      unace x ./"$n"      ;;
-            *)
-                         echo "extract: '$n' - unknown archive method"
-                         return 1
-                         ;;
-          esac
+  else
+    for n in "$@"; do
+      if [ -f "$n" ]; then
+        case "${n%,}" in
+          *.cbt | *.tar.bz2 | *.tar.gz | *.tar.xz | *.tbz2 | *.tgz | *.txz | *.tar)
+            tar xvf "$n"
+            ;;
+          *.lzma) unlzma ./"$n" ;;
+          *.bz2) bunzip2 ./"$n" ;;
+          *.cbr | *.rar) unrar x -ad ./"$n" ;;
+          *.gz) gunzip ./"$n" ;;
+          *.cbz | *.epub | *.zip) unzip ./"$n" ;;
+          *.z) uncompress ./"$n" ;;
+          *.7z | *.arj | *.cab | *.cb7 | *.chm | *.deb | *.dmg | *.iso | *.lzh | *.msi | *.pkg | *.rpm | *.udf | *.wim | *.xar)
+            7z x ./"$n"
+            ;;
+          *.xz) unxz ./"$n" ;;
+          *.exe) cabextract ./"$n" ;;
+          *.cpio) cpio -id <./"$n" ;;
+          *.cba | *.ace) unace x ./"$n" ;;
+          *)
+            echo "extract: '$n' - unknown archive method"
+            return 1
+            ;;
+        esac
       else
-          echo "'$n' - file does not exist"
-          return 1
+        echo "'$n' - file does not exist"
+        return 1
       fi
     done
-fi
+  fi
 }
 
 IFS=$SAVEIFS
 
 # navigation
-up () {
+up() {
   local d=""
   local limit="$1"
 
@@ -212,13 +212,13 @@ up () {
     limit=1
   fi
 
-  for ((i=1;i<=limit;i++)); do
+  for ((i = 1; i <= limit; i++)); do
     d="../$d"
   done
 
   # perform cd. Show error if cd fails
   if ! cd "$d"; then
-    echo "Couldn't go up $limit dirs.";
+    echo "Couldn't go up $limit dirs."
   fi
 }
 
@@ -230,8 +230,8 @@ alias lt='exa -aT --color=always --group-directories-first' # tree listing
 alias l.='exa -a | egrep "^\."'
 
 ### adding flags ###
-alias df='df -h'                          # human-readable sizes
-alias free='free -m'                      # show sizes in MB
+alias df='df -h'     # human-readable sizes
+alias free='free -m' # show sizes in MB
 alias lynx='lynx -cfg=~/.lynx/lynx.cfg -lss=~/.lynx/lynx.lss -vikeys'
 alias vifm='./.config/vifm/scripts/vifmrun'
 alias ncmpcpp='ncmpcpp ncmpcpp_directory=$HOME/.config/ncmpcpp/'
@@ -271,5 +271,5 @@ alias sbcl-repl="rlwrap $LISP/sbcl/bin/sbcl --noinform --load $QUICKLISP_HOME/se
 alias ccl-repl="rlwrap $LISP/ccl/lx86cl64 --load $QUICKLISP_HOME/setup.lisp"
 alias ecl-repl="rlwrap $LISP/ecl/bin/ecl --load $QUICKLISP_HOME/setup.lisp"
 
-### load .profile if it exists ###
-[ -f $HOME/.profile ] && source $HOME/.profile
+### Starship ###
+[ ! -z $(command -v starship) ] && eval "$(starship init bash)" # corss-shell prompt, https://starship.rs/
