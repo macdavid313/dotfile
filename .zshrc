@@ -251,13 +251,14 @@ alias ytv-best="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c -
 
 ### Common Lisp ###
 export LISP=$HOME/lisp
-alias alisp-repl="rlwrap $LISP/linuxamd64.64/alisp -L $HOME/quicklisp/setup.lisp"
-alias alisp-smp-repl="rlwrap $LISP/linuxamd64.64smp/alisp -L $HOME/quicklisp/setup.lisp"
-alias mlisp-repl="rlwrap $LISP/linuxamd64.64/mlisp -L $HOME/quicklisp/setup.lisp"
-alias mlisp-smp-repl="rlwrap $LISP/linuxamd64.64smp/mlisp -L $HOME/quicklisp/setup.lisp"
-alias sbcl-repl="rlwrap $LISP/sbcl/bin/sbcl --noinform --load $HOME/quicklisp/setup.lisp --eval '(require :sb-aclrepl)'"
-alias ccl-repl="rlwrap $LISP/ccl/lx86cl64 --load $HOME/quicklisp/setup.lisp"
-alias ecl-repl="rlwrap $LISP/ecl/bin/ecl --load $HOME/quicklisp/setup.lisp"
+export QUICKLISP_HOME=$HOME/quicklisp
+alias alisp-repl="rlwrap $LISP/linuxamd64.64/alisp -L $QUICKLISP_HOME/setup.lisp"
+alias alisp-smp-repl="rlwrap $LISP/linuxamd64.64smp/alisp -L $QUICKLISP_HOME/setup.lisp"
+alias mlisp-repl="rlwrap $LISP/linuxamd64.64/mlisp -L $QUICKLISP_HOME/setup.lisp"
+alias mlisp-smp-repl="rlwrap $LISP/linuxamd64.64smp/mlisp -L $QUICKLISP_HOME/setup.lisp"
+alias sbcl-repl="rlwrap $LISP/sbcl/bin/sbcl --noinform --load $QUICKLISP_HOME/setup.lisp --eval '(require :sb-aclrepl)'"
+alias ccl-repl="rlwrap $LISP/ccl/lx86cl64 --load $QUICKLISP_HOME/setup.lisp"
+alias ecl-repl="rlwrap $LISP/ecl/bin/ecl --load $QUICKLISP_HOME/setup.lisp"
 
 ### load .profile if it exists ###
 [ -f $HOME/.profile ] && source $HOME/.profile

@@ -93,7 +93,7 @@ plugins=(
 
 # Which plugins would you like to conditionally load? (plugins can be found in ~/.oh-my-bash/plugins/*)
 # Custom plugins may be added to ~/.oh-my-bash/custom/plugins/
-# Example format: 
+# Example format:
 #  if [ "$DISPLAY" ] || [ "$SSH" ]; then
 #      plugins+=(tmux-autoattach)
 #  fi
@@ -147,6 +147,7 @@ fi
 [ -f $HOME/.cargo/env ] && source "$HOME/.cargo/env" # Rust (Cargo)
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash # fzf
 [ ! -z $(command -v zoxide) ] && eval "$(zoxide init bash)" # a smarter cd command, https://github.com/ajeetdsouza/zoxide
+[ ! -z $(command -v starship) ] && eval "$(starship init bash)" # corss-shell prompt, https://starship.rs/
 
 ### CHANGE TITLE OF TERMINALS ###
 case ${TERM} in
@@ -261,17 +262,14 @@ alias ytv-best="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c -
 
 ### Common Lisp ###
 export LISP=$HOME/lisp
-alias alisp-repl="rlwrap $LISP/linuxamd64.64/alisp -L $HOME/quicklisp/setup.lisp"
-alias alisp-smp-repl="rlwrap $LISP/linuxamd64.64smp/alisp -L $HOME/quicklisp/setup.lisp"
-alias mlisp-repl="rlwrap $LISP/linuxamd64.64/mlisp -L $HOME/quicklisp/setup.lisp"
-alias mlisp-smp-repl="rlwrap $LISP/linuxamd64.64smp/mlisp -L $HOME/quicklisp/setup.lisp"
-alias sbcl-repl="rlwrap $LISP/sbcl/bin/sbcl --noinform --load $HOME/quicklisp/setup.lisp --eval '(require :sb-aclrepl)'"
-alias ccl-repl="rlwrap $LISP/ccl/lx86cl64 --load $HOME/quicklisp/setup.lisp"
-alias ecl-repl="rlwrap $LISP/ecl/bin/ecl --load $HOME/quicklisp/setup.lisp"
+export QUICKLISP_HOME=$HOME/quicklisp
+alias alisp-repl="rlwrap $LISP/linuxamd64.64/alisp -L $QUICKLISP_HOME/setup.lisp"
+alias alisp-smp-repl="rlwrap $LISP/linuxamd64.64smp/alisp -L $QUICKLISP_HOME/setup.lisp"
+alias mlisp-repl="rlwrap $LISP/linuxamd64.64/mlisp -L $QUICKLISP_HOME/setup.lisp"
+alias mlisp-smp-repl="rlwrap $LISP/linuxamd64.64smp/mlisp -L $QUICKLISP_HOME/setup.lisp"
+alias sbcl-repl="rlwrap $LISP/sbcl/bin/sbcl --noinform --load $QUICKLISP_HOME/setup.lisp --eval '(require :sb-aclrepl)'"
+alias ccl-repl="rlwrap $LISP/ccl/lx86cl64 --load $QUICKLISP_HOME/setup.lisp"
+alias ecl-repl="rlwrap $LISP/ecl/bin/ecl --load $QUICKLISP_HOME/setup.lisp"
 
-# Starship Shell Prompt
-[ ! -z $(command -v starship) ] && eval "$(starship init bash)" # corss-shell prompt, https://starship.rs/
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+### load .profile if it exists ###
+[ -f $HOME/.profile ] && source $HOME/.profile
