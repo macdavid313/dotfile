@@ -263,13 +263,29 @@ alias ytv-best="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c -
 ### Common Lisp ###
 export LISP=$HOME/lisp
 export QUICKLISP_HOME=$HOME/quicklisp
-alias alisp-repl="rlwrap $LISP/linuxamd64.64/alisp -L $QUICKLISP_HOME/setup.lisp"
-alias alisp-smp-repl="rlwrap $LISP/linuxamd64.64smp/alisp -L $QUICKLISP_HOME/setup.lisp"
-alias mlisp-repl="rlwrap $LISP/linuxamd64.64/mlisp -L $QUICKLISP_HOME/setup.lisp"
-alias mlisp-smp-repl="rlwrap $LISP/linuxamd64.64smp/mlisp -L $QUICKLISP_HOME/setup.lisp"
-alias sbcl-repl="rlwrap $LISP/sbcl/bin/sbcl --noinform --load $QUICKLISP_HOME/setup.lisp --eval '(require :sb-aclrepl)'"
-alias ccl-repl="rlwrap $LISP/ccl/lx86cl64 --load $QUICKLISP_HOME/setup.lisp"
-alias ecl-repl="rlwrap $LISP/ecl/bin/ecl --load $QUICKLISP_HOME/setup.lisp"
+
+if [ -d $LISP/sbcl ]; then
+  alias sbcl-repl="rlwrap $LISP/sbcl/bin/sbcl --noinform --load $QUICKLISP_HOME/setup.lisp --eval '(require :sb-aclrepl)'"
+fi
+
+if [ -d $LISP/ecl ]; then
+  alias ecl-repl="rlwrap $LISP/ecl/bin/ecl --load $QUICKLISP_HOME/setup.lisp"
+fi
+
+for acltype in linuxamd64.64 macarm64.64 macosx86-64.64
+do
+  if [ -d $LISP/${acltype} ]; then
+    export ACL_HOME=$LISP/${acltype}
+    alias alisp-repl="rlwrap $ACL_HOME/alisp -L $QUICKLISP_HOME/setup.lisp"
+    alias mlisp-repl="rlwrap $ACL_HOME/mlisp -L $QUICKLISP_HOME/setup.lisp"
+  fi
+
+  if [ -d $LISP/${acltype}smp ]; then
+    export ACL_SMP_HOME=$LISP/${acltype}smp
+    alias alisp-smp-repl="rlwrap $ACL_SMP_HOME/alisp -L $QUICKLISP_HOME/setup.lisp"
+    alias mlisp-smp-repl="rlwrap $ACL_SMP_HOME/mlisp -L $QUICKLISP_HOME/setup.lisp"
+  fi
+done
 
 ### Starship ###
 [ ! -z $(command -v starship) ] && eval "$(starship init bash)" # corss-shell prompt, https://starship.rs/
