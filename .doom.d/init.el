@@ -23,8 +23,8 @@
        (company +auto +childframe)      ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       (ivy +childframe +prescient +icons) ; a search engine for love and life
-       ;; (vertico +icons)
+       ;;(ivy +childframe +prescient +icons) ; a search engine for love and life
+       (vertico +childframe +icons)
 
        :ui
        ;;deft              ; notational velocity for Emacs
@@ -103,6 +103,7 @@
        taskrunner ; taskrunner for all your projects
        ;;terraform         ; infrastructure as code
        ;;tmux              ; an API for interacting with tmux
+       tree-sitter
        ;;upload            ; map local to remote projects via ssh/ftp
 
        :os
