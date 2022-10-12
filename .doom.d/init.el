@@ -20,11 +20,11 @@
        ;;layout            ; auie,ctsrnm is the superior home row
 
        :completion
-       (company +auto +childframe)      ; the ultimate code completion backend
+       (company +tng +childframe)      ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       ;;(ivy +childframe +prescient +icons) ; a search engine for love and life
-       (vertico +childframe +icons)
+       (ivy +childframe +prescient +icons) ; a search engine for love and life
+       ;;(vertico +childframe +icons)
 
        :ui
        ;;deft              ; notational velocity for Emacs
@@ -151,7 +151,7 @@
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       ;;(python +conda +lsp +pyright +cython)          ; beautiful is better than ugly
+       (python +conda +cython +lsp +poetry +tree-sitter)          ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6

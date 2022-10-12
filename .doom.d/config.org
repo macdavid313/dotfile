@@ -1175,7 +1175,7 @@ People at Franz tend to use =.cl= for lisp file extension.
           :desc "Toggle (fancy)" "T" #'slime-toggle-fancy-trace
           :desc "Untrace all"    "u" #'slime-untrace-all)))
 
-  (when (featurep! :editor evil +everywhere)
+  (when (modulep! :editor evil +everywhere)
     (add-hook 'slime-mode-hook #'evil-normalize-keymaps)))
 #+end_src
 
