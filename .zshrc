@@ -265,14 +265,18 @@ for acltype in linuxamd64.64 macarm64.64 macosx86-64.64
 do
   if [ -d $LISP/${acltype} ]; then
     export ACL_HOME=$LISP/${acltype}
-    alias alisp-repl="rlwrap $ACL_HOME/alisp -L $QUICKLISP_HOME/setup.lisp"
-    alias mlisp-repl="rlwrap $ACL_HOME/mlisp -L $QUICKLISP_HOME/setup.lisp"
+    export ALISP=$ACL_HOME/alisp
+    export MLISP=$ACL_HOME/mlisp
+    alias alisp-repl="rlwrap $ALISP -L $QUICKLISP_HOME/setup.lisp"
+    alias mlisp-repl="rlwrap $MLISP -L $QUICKLISP_HOME/setup.lisp"
   fi
 
   if [ -d $LISP/${acltype}smp ]; then
     export ACL_SMP_HOME=$LISP/${acltype}smp
-    alias alisp-smp-repl="rlwrap $ACL_SMP_HOME/alisp -L $QUICKLISP_HOME/setup.lisp"
-    alias mlisp-smp-repl="rlwrap $ACL_SMP_HOME/mlisp -L $QUICKLISP_HOME/setup.lisp"
+    export ALISP_SMP=$ACL_SMP_HOME/alisp
+    export MLISP_SMP=$ACL_SMP_HOME/mlisp
+    alias alisp-smp-repl="rlwrap $ALISP_SMP -L $QUICKLISP_HOME/setup.lisp"
+    alias mlisp-smp-repl="rlwrap $MLISP_SMP -L $QUICKLISP_HOME/setup.lisp"
   fi
 done
 
