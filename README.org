@@ -1,9 +1,9 @@
-#+TITLE: gty's dotfiles (configurations)
+#+TITLE: dotfiles (configurations)
 
 * Install or Migrate
 
 #+begin_src sh
-git clone --bare git@gitlab.com:macdavid313/dotfiles.git $HOME/dotfiles
+git clone --bare git@github.com:macdavid313/dotfile.git $HOME/dotfiles
 git --git-dir=$HOME/dotfiles --work-tree=$HOME checkout
 #+end_src
 
