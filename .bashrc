@@ -291,5 +291,12 @@ do
   fi
 done
 
+### pyenv ###
+if [ -d $HOME/.pyenv ]; then
+  export PYENV_ROOT=$HOME/.pyenv
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init -)"
+fi
+
 ### Starship ###
 [ ! -z $(command -v starship) ] && eval "$(starship init bash)" # corss-shell prompt, https://starship.rs/
