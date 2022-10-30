@@ -1214,3 +1214,12 @@ TODO: need more work and test ...
         ;; lsp-eldoc-render-all t
         lsp-rust-analyzer-server-display-inlay-hints t))
 #+end_src
+
+** Python
+
+Use [[https://github.com/microsoft/debugpy][debugpy]] as the default debugger.
+
+#+begin_src emacs-lisp
+(after! dap-mode
+  (setq dap-python-debugger 'debugpy))
+#+end_src
