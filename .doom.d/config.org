@@ -791,7 +791,8 @@ Babel is Org-mode's ability to execute source code within Org-mode documents.
    (jupyter . t)
    (sh . t)
    (sql . t)
-   (sqlite . t)))
+   (sqlite . t)
+   (sparql . t)))
 #+end_src
 
 **** Common Lisp
@@ -931,15 +932,10 @@ structure has come to my attention.
   :config
   (add-hook 'auto-mode-alist '("\\.sparql$" . sparql-mode))
   (add-to-list 'auto-mode-alist '("\\.rq$" . sparql-mode))
-  (add-hook 'sparql-mode-hook 'company-mode)
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((sparql . t))))
+  (add-hook 'sparql-mode-hook 'company-mode))
 #+end_src
 
 ** LSP
-
-TODO: need to test further with Python and Rust ...
 
 #+begin_src emacs-lisp
 (add-hook 'lsp-mode-hook
@@ -961,7 +957,6 @@ A must-have for Lisps.
   (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
   (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
   (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-  (add-hook 'racket-mode-hook           #'enable-paredit-mode)
   ;; Electric RETURN
   (defvar electrify-return-match
     "[\]}\)\"]"
@@ -979,6 +974,16 @@ A must-have for Lisps.
       (indent-according-to-mode)))
   ;; Using local-set-key in a mode-hook is a better idea.
   (global-set-key (kbd "RET") 'electrify-return-if-match))
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda ()
+              (paredit-mode t)
+              (turn-on-eldoc-mode)
+              (eldoc-add-command
+               'paredit-backward-delete
+               'paredit-close-round)
+              (local-set-key (kbd "RET") 'electrify-return-if-match)
+              (eldoc-add-command 'electrify-return-if-match)
+              (show-paren-mode t)))
 #+end_src
 
 ** Common Lisp
@@ -1204,8 +1209,6 @@ People at Franz tend to use =.cl= for lisp file extension.
 #+end_src
 
 ** Rust
-
-TODO: need more work and test ...
 
 #+begin_src emacs-lisp
 (after! rustic
