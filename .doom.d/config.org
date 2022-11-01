@@ -1029,12 +1029,16 @@ People at Franz tend to use =.cl= for lisp file extension.
 
 AllegroCL has its own dedicated [[https://franz.com/support/documentation/current/doc/eli.htm][Emacs lisp interface]].
 
+The first =cond= form tries to load /eli/ form either systemed installed site or
+AllegroCL installation folder. The second folder defines two entry functions to
+start the REPL buffer for =alisp= an =mlisp= respectively.
+
 #+begin_src emacs-lisp
 (cond
  ;; load from franz workstation environment
  ((file-exists-p "/usr/fi/emacs-lib/fi/")
-       (load-file (concat "/usr/fi/emacs-lib/fi/" "fi-site-init.el")))
-;; load from installed ACL folder
+  (load-file (concat "/usr/fi/emacs-lib/fi/" "fi-site-init.el")))
+ ;; load from installed ACL folder
  ((or (getenv "ACL_HOME") (getenv "ACL_SMP_HOME"))
   (let* ((lisp-home (file-name-as-directory (or (getenv "ACL_HOME") (getenv "ACL_SMP_HOME"))))
          (eli-directory (file-name-as-directory (concat lisp-home "eli"))))
