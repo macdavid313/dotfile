@@ -993,7 +993,6 @@ Add some rainbows to the parentheses!
 
 #+begin_src emacs-lisp
 (add-hook 'lisp-mode-hook #'rainbow-delimiters-mode)
-(add-hook 'common-lisp-mode-hook #'rainbow-delimiters-mode)
 #+end_src
 
 People at Franz tend to use =.cl= for lisp file extension.
