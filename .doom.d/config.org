@@ -1051,11 +1051,17 @@ AllegroCL installation folder.
   (advice-add 'fi:common-lisp-mode :after #'rainbow-delimiters-mode-enable)
   ;; code format
   (local-set-key (kbd "M-q") 'fi:indent-sexp)
+  ;; normalize evil keymaps
+  (when (modulep! :editor evil +everywhere)
+    (add-hook 'fi:inferior-common-lisp-mode-hook #'evil-normalize-keymaps))
+  ;; display in a different window
+  (setq fi:display-buffer-function #'project-display-buffer)
   ;; ALISP
   (defun fi:alisp (smp)
     (interactive (list (y-or-n-p "SMP? ")))
     (let* ((lisp-home (file-name-as-directory (getenv (if smp "ACL_SMP_HOME" "ACL_HOME")))))
       (fi:common-lisp (concat "*alisp" (if smp "-smp" "") "*")
+                      fi:common-lisp-directory
                       (getenv "PWD")
                       (concat lisp-home "alisp")
                       fi:common-lisp-image-arguments
@@ -1066,14 +1072,11 @@ AllegroCL installation folder.
     (interactive (list (y-or-n-p "SMP? ")))
     (let* ((lisp-home (file-name-as-directory (getenv (if smp "ACL_SMP_HOME" "ACL_HOME")))))
       (fi:common-lisp (concat "*mlisp" (if smp "-smp" "") "*")
-                      (getenv "PWD")
+                      fi:common-lisp-directory
                       (concat lisp-home "mlisp")
                       fi:common-lisp-image-arguments
                       fi:common-lisp-host
                       (concat lisp-home "mlisp.dxl"))))
-
-  (when (modulep! :editor evil +everywhere)
-    (add-hook 'fi:inferior-common-lisp-mode-hook #'evil-normalize-keymaps))
   ) ;; end of when
 #+end_src
 
