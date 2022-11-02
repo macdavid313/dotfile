@@ -1015,15 +1015,12 @@ People at Franz tend to use =.cl= for lisp file extension.
 
 #+begin_src emacs-lisp
 (use-package! sly
-  :init
-  (require 'sly-autoloads)
   :config
   (setf sly-kill-without-query-p t
         sly-default-lisp 'mlisp-smp
         sly-net-coding-system 'utf-8-unix
         sly-load-failed-fasl 'never)
 
-  (local-set-key [tab] 'sly-complete-symbol)
   (local-set-key (kbd "M-q") 'sly-reindent-defun)
 
   ;; fix indentation for `if*' when using keyword forms
