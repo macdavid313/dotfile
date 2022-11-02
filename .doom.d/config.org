@@ -998,7 +998,7 @@ Add some rainbows to the parentheses!
 People at Franz tend to use =.cl= for lisp file extension.
 
 #+begin_src emacs-lisp
-;; (add-to-list 'auto-mode-alist '("\\.cl\\'" . lisp-mode))
+(add-to-list 'auto-mode-alist '("\\.cl\\'" . lisp-mode))
 #+end_src
 
 *** Documentations
@@ -1023,61 +1023,6 @@ People at Franz tend to use =.cl= for lisp file extension.
   "Quickly access SBCL Manual"
   (interactive)
   (eww-browse-url "http://www.sbcl.org/manual/index.html"))
-#+end_src
-
-*** AllegroCL and ELI
-
-AllegroCL has its own dedicated [[https://franz.com/support/documentation/current/doc/eli.htm][Emacs lisp interface]].
-
-The first =cond= form tries to load /eli/ form either systemed installed site or
-AllegroCL installation folder.
-
-#+begin_src emacs-lisp
-(cond
- ;; load from franz workstation environment
- ((file-exists-p "/usr/fi/emacs-lib/fi/")
-  (load-file (concat "/usr/fi/emacs-lib/fi/" "fi-site-init.el")))
- ;; load from installed ACL folder
- ((or (getenv "ACL_HOME") (getenv "ACL_SMP_HOME"))
-  (let* ((lisp-home (file-name-as-directory (or (getenv "ACL_HOME") (getenv "ACL_SMP_HOME"))))
-         (eli-directory (file-name-as-directory (concat lisp-home "eli"))))
-    (when (file-exists-p eli-directory)
-      (load-file (concat eli-directory "fi-site-init.el"))))))
-
-(when (fboundp 'fi:common-lisp)
-  ;; paredit
-  (add-hook 'fi:common-lisp-mode-hook #'enable-paredit-mode)
-  ;; rainbow
-  (advice-add 'fi:common-lisp-mode :after #'rainbow-delimiters-mode-enable)
-  ;; code format
-  (local-set-key (kbd "M-q") 'fi:indent-sexp)
-  ;; normalize evil keymaps
-  (when (modulep! :editor evil +everywhere)
-    (add-hook 'fi:inferior-common-lisp-mode-hook #'evil-normalize-keymaps))
-  ;; display in a different window
-  (setq fi:display-buffer-function #'project-display-buffer)
-  ;; ALISP
-  (defun fi:alisp (smp)
-    (interactive (list (y-or-n-p "SMP? ")))
-    (let* ((lisp-home (file-name-as-directory (getenv (if smp "ACL_SMP_HOME" "ACL_HOME")))))
-      (fi:common-lisp (concat "*alisp" (if smp "-smp" "") "*")
-                      fi:common-lisp-directory
-                      (getenv "PWD")
-                      (concat lisp-home "alisp")
-                      fi:common-lisp-image-arguments
-                      fi:common-lisp-host
-                      (concat lisp-home "alisp.dxl"))))
-  ;; MLISP
-  (defun fi:mlisp (smp)
-    (interactive (list (y-or-n-p "SMP? ")))
-    (let* ((lisp-home (file-name-as-directory (getenv (if smp "ACL_SMP_HOME" "ACL_HOME")))))
-      (fi:common-lisp (concat "*mlisp" (if smp "-smp" "") "*")
-                      fi:common-lisp-directory
-                      (concat lisp-home "mlisp")
-                      fi:common-lisp-image-arguments
-                      fi:common-lisp-host
-                      (concat lisp-home "mlisp.dxl"))))
-  ) ;; end of when
 #+end_src
 
 *** Slime
@@ -1129,12 +1074,12 @@ AllegroCL installation folder.
                          (concat (file-name-as-directory quicklisp-home)
                                  "setup.lisp")))
 
-  ;; (cl-loop for (lisp . env)
-  ;;          in '((alisp . "ALISP") (mlisp . "MLISP") (alisp-smp . "ALISP_SMP") (mlisp-smp . "MLISP_SMP"))
-  ;;          when (getenv env)
-  ;;          do (add-to-list 'slime-lisp-implementations
-  ;;                          `(,lisp ,(remove nil
-  ;;                                           `(,(getenv env) ,@(when quicklisp-setup-path `("-L" ,quicklisp-setup-path)))))))
+  (cl-loop for (lisp . env)
+           in '((alisp . "ALISP") (mlisp . "MLISP") (alisp-smp . "ALISP_SMP") (mlisp-smp . "MLISP_SMP"))
+           when (getenv env)
+           do (add-to-list 'slime-lisp-implementations
+                           `(,lisp ,(remove nil
+                                            `(,(getenv env) ,@(when quicklisp-setup-path `("-L" ,quicklisp-setup-path)))))))
 
   (when (getenv "LISP")
     (let* ((lisp-home (file-name-as-directory (getenv "LISP")))
