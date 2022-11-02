@@ -1001,7 +1001,7 @@ People at Franz tend to use =.cl= for lisp file extension.
 (add-to-list 'auto-mode-alist '("\\.cl\\'" . lisp-mode))
 #+end_src
 
-*** Documentations
+*** HyperSpec (Documentation)
 
 #+begin_src emacs-lisp
 (advice-add 'hyperspec-lookup
@@ -1009,65 +1009,35 @@ People at Franz tend to use =.cl= for lisp file extension.
             (lambda (orig-fun &rest args)
               (setq-local browse-url-browser-function 'eww-browse-url)
               (apply orig-fun args)))
-
-(defun acl-doc ()
-  (interactive)
-  (eww-browse-url "https://franz.com/support/documentation/current/doc/index.htm"))
-
-(defun cltl2 ()
-  "Quickly access Common Lisp the Language 2nd Edition"
-  (interactive)
-  (eww-browse-url "https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/index.html"))
-
-(defun sbcl-doc ()
-  "Quickly access SBCL Manual"
-  (interactive)
-  (eww-browse-url "http://www.sbcl.org/manual/index.html"))
 #+end_src
 
-*** Slime
+*** Sly
 
 #+begin_src emacs-lisp
-(use-package! slime
-  :hook (lisp-mode-local-vars . slime-editing-mode)
+(use-package! sly
   :init
-  (after! lisp-mode
-    (set-repl-handler! 'lisp-mode #'slime-repl)
-    (set-eval-handler! 'lisp-mode #'slime-eval-region)
-    (set-lookup-handlers! 'lisp-mode
-      :definition #'slime-edit-definition
-      :documentation #'slime-describe-symbol))
+  (require 'sly-autoloads)
   :config
-  (let ((hyperspec-root (file-name-as-directory (concat (getenv "HOME") "/lisp/HyperSpec"))))
-    (when (file-exists-p hyperspec-root)
-      (setq hyperspec-root (concat "file://" hyperspec-root))
-      (setq common-lisp-hyperspec-root hyperspec-root
-            common-lisp-hyperspec-symbol-table (concat hyperspec-root "Data/Map_Sym.txt")
-            common-lisp-hyperspec-issuex-table (concat hyperspec-root "Data/Map_IssX.txt"))))
+  (setf sly-kill-without-query-p t
+        sly-default-lisp 'mlisp-smp
+        sly-net-coding-system 'utf-8-unix
+        sly-load-failed-fasl 'never)
 
-  (setf slime-repl-history-file (concat doom-cache-dir "slime-repl-history")
-        slime-kill-without-query-p t
-        slime-default-lisp 'sbcl
-        slime-protocol-version 'ignore
-        slime-net-coding-system 'utf-8-unix
-        slime-load-failed-fasl 'never
-        slime-completion-at-point-functions 'slime-fuzzy-complete-symbol)
-
-  (local-set-key [tab] 'slime-complete-symbol)
-  (local-set-key (kbd "M-q") 'slime-reindent-defun)
+  (local-set-key [tab] 'sly-complete-symbol)
+  (local-set-key (kbd "M-q") 'sly-reindent-defun)
 
   ;; fix indentation for `if*' when using keyword forms
   (setq common-lisp-indent-if*-keyword
         (rx (? ":") (or "else" "elseif" "then")))
 
   (set-popup-rules!
-    '(("^\\*slime-repl"        :vslot 2 :size 0.3 :quit nil :ttl nil)
-      ("^\\*slime-compilation" :vslot 3 :ttl nil)
-      ("^\\*slime-traces"      :vslot 4 :ttl nil)
-      ("^\\*slime-description" :vslot 5 :size 0.3 :ttl 0)
+    '(("^\\*sly-repl"        :vslot 2 :size 0.3 :quit nil :ttl nil)
+      ("^\\*sly-compilation" :vslot 3 :ttl nil)
+      ("^\\*sly-traces"      :vslot 4 :ttl nil)
+      ("^\\*sly-description" :vslot 5 :size 0.3 :ttl 0)
       ;; Do not display debugger or inspector buffers in a popup window. These
       ;; buffers are meant to be displayed with sufficient vertical space.
-      ("^\\*slime-\\(?:db\\|inspector\\)" :ignore t)))
+      ("^\\*sly-\\(?:db\\|inspector\\)" :ignore t)))
 
   (setq quicklisp-home (concat (file-name-as-directory (getenv "HOME")) "quicklisp"))
   (setq quicklisp-setup-path (when (file-exists-p quicklisp-home)
@@ -1077,7 +1047,7 @@ People at Franz tend to use =.cl= for lisp file extension.
   (cl-loop for (lisp . env)
            in '((alisp . "ALISP") (mlisp . "MLISP") (alisp-smp . "ALISP_SMP") (mlisp-smp . "MLISP_SMP"))
            when (getenv env)
-           do (add-to-list 'slime-lisp-implementations
+           do (add-to-list 'sly-lisp-implementations
                            `(,lisp ,(remove nil
                                             `(,(getenv env) ,@(when quicklisp-setup-path `("-L" ,quicklisp-setup-path)))))))
 
@@ -1088,114 +1058,97 @@ People at Franz tend to use =.cl= for lisp file extension.
            (ecl (concat lisp-home "ecl/bin/ecl")))
 
       (when (file-exists-p sbcl)
-        (add-to-list 'slime-lisp-implementations
+        (add-to-list 'sly-lisp-implementations
                      (if quicklisp-setup-path
                          `(sbcl (,sbcl "--noinform" "--load" ,quicklisp-setup-path))
                        `(sbcl (,sbcl "--noinform")))))
 
       (when (file-exists-p ccl)
-        (add-to-list 'slime-lisp-implementations
+        (add-to-list 'sly-lisp-implementations
                      (if quicklisp-setup-path
                          `(ccl (,ccl "--load" ,quicklisp-setup-path))
                        `(ccl (,ccl)))))
 
       (when (file-exists-p ecl)
-        (add-to-list 'slime-lisp-implementations
+        (add-to-list 'sly-lisp-implementations
                      (if quicklisp-setup-path
                          `(ecl (,ecl "-load" ,quicklisp-setup-path))
                        `(ecl (,ecl)))))))
 
-  (map! (:map slime-db-mode-map
-         :n "gr" #'slime-db-restart-frame)
-        (:map slime-inspector-mode-map
-         :n "gb" #'slime-inspector-pop
-         :n "gr" #'slime-inspector-reinspect
-         :n "gR" #'slime-inspector-fetch-all
-         :n "K"  #'slime-inspector-describe-inspectee)
-        (:map slime-xref-mode-map
-         :n "gr" #'slime-recompile-xref
-         :n "gR" #'slime-recompile-all-xrefs)
+  (map! (:map sly-db-mode-map
+         :n "gr" #'sly-db-restart-frame)
+        (:map sly-inspector-mode-map
+         :n "gb" #'sly-inspector-pop
+         :n "gr" #'sly-inspector-reinspect
+         :n "gR" #'sly-inspector-fetch-all
+         :n "K"  #'sly-inspector-describe-inspectee)
+        (:map sly-xref-mode-map
+         :n "gr" #'sly-recompile-xref
+         :n "gR" #'sly-recompile-all-xrefs)
         (:map lisp-mode-map
-         :n "gb" #'slime-pop-find-definition-stack)
+         :n "gb" #'sly-pop-find-definition-stack)
 
         (:localleader
          :map lisp-mode-map
-         :desc "slime"          "'" #'slime
-         :desc "slime (ask)"    ";" (cmd!! #'slime '-)
+         :desc "sly"          "'" #'sly
+         :desc "sly (ask)"    ";" (cmd!! #'sly '-)
          :desc "Expand macro" "m" #'macrostep-expand
          (:prefix ("c" . "compile")
-          :desc "Compile file"          "c" #'slime-compile-file
-          :desc "Compile/load file"     "C" #'slime-compile-and-load-file
-          :desc "Compile toplevel form" "f" #'slime-compile-defun
-          :desc "Load file"             "l" #'slime-load-file
-          :desc "Remove notes"          "n" #'slime-remove-notes
-          :desc "Compile region"        "r" #'slime-compile-region)
+          :desc "Compile file"          "c" #'sly-compile-file
+          :desc "Compile/load file"     "C" #'sly-compile-and-load-file
+          :desc "Compile toplevel form" "f" #'sly-compile-defun
+          :desc "Load file"             "l" #'sly-load-file
+          :desc "Remove notes"          "n" #'sly-remove-notes
+          :desc "Compile region"        "r" #'sly-compile-region)
          (:prefix ("e" . "evaluate")
-          :desc "Evaluate buffer"     "b" #'slime-eval-buffer
-          :desc "Evaluate last"       "e" #'slime-eval-last-expression
-          :desc "Evaluate/print last" "E" #'slime-eval-print-last-expression
-          :desc "Evaluate defun"      "f" #'slime-eval-defun
-          :desc "Undefine function"   "F" #'slime-undefine-function
-          :desc "Evaluate region"     "r" #'slime-eval-region)
+          :desc "Evaluate buffer"     "b" #'sly-eval-buffer
+          :desc "Evaluate last"       "e" #'sly-eval-last-expression
+          :desc "Evaluate/print last" "E" #'sly-eval-print-last-expression
+          :desc "Evaluate defun"      "f" #'sly-eval-defun
+          :desc "Undefine function"   "F" #'sly-undefine-function
+          :desc "Evaluate region"     "r" #'sly-eval-region)
          (:prefix ("g" . "goto")
-          :desc "Go back"              "b" #'slime-pop-find-definition-stack
-          :desc "Go to"                "d" #'slime-edit-definition
-          :desc "Go to (other window)" "D" #'slime-edit-definition-other-window
-          :desc "Next note"            "n" #'slime-next-note
-          :desc "Previous note"        "N" #'slime-previous-note
-          :desc "Next sticker"         "s" #'slime-stickers-next-sticker
-          :desc "Previous sticker"     "S" #'slime-stickers-prev-sticker)
+          :desc "Go back"              "b" #'sly-pop-find-definition-stack
+          :desc "Go to"                "d" #'sly-edit-definition
+          :desc "Go to (other window)" "D" #'sly-edit-definition-other-window
+          :desc "Next note"            "n" #'sly-next-note
+          :desc "Previous note"        "N" #'sly-previous-note
+          :desc "Next sticker"         "s" #'sly-stickers-next-sticker
+          :desc "Previous sticker"     "S" #'sly-stickers-prev-sticker)
          (:prefix ("h" . "help")
-          :desc "Who calls"               "<" #'slime-who-calls
-          :desc "Calls who"               ">" #'slime-calls-who
+          :desc "Who calls"               "<" #'sly-who-calls
+          :desc "Calls who"               ">" #'sly-calls-who
           :desc "Lookup format directive" "~" #'hyperspec-lookup-format
           :desc "Lookup reader macro"     "#" #'hyperspec-lookup-reader-macro
-          :desc "Apropos"                 "a" #'slime-apropos
-          :desc "Who binds"               "b" #'slime-who-binds
-          :desc "Disassemble symbol"      "d" #'slime-disassemble-symbol
-          :desc "Describe symbol"         "h" #'slime-describe-symbol
-          :desc "HyperSpec lookup"        "H" #'slime-hyperspec-lookup
-          :desc "Who macro-expands"       "m" #'slime-who-macroexpands
-          :desc "Apropos package"         "p" #'slime-apropos-package
-          :desc "Who references"          "r" #'slime-who-references
-          :desc "Who specializes"         "s" #'slime-who-specializes
-          :desc "Who sets"                "S" #'slime-who-sets)
+          :desc "Apropos"                 "a" #'sly-apropos
+          :desc "Who binds"               "b" #'sly-who-binds
+          :desc "Disassemble symbol"      "d" #'sly-disassemble-symbol
+          :desc "Describe symbol"         "h" #'sly-describe-symbol
+          :desc "HyperSpec lookup"        "H" #'sly-hyperspec-lookup
+          :desc "Who macro-expands"       "m" #'sly-who-macroexpands
+          :desc "Apropos package"         "p" #'sly-apropos-package
+          :desc "Who references"          "r" #'sly-who-references
+          :desc "Who specializes"         "s" #'sly-who-specializes
+          :desc "Who sets"                "S" #'sly-who-sets)
          (:prefix ("r" . "repl")
-          :desc "Clear REPL"         "c" #'slime-repl-clear-repl
-          :desc "Quit connection"    "q" #'slime-quit-lisp
-          :desc "Restart connection" "r" #'slime-restart-inferior-lisp
-          :desc "Sync REPL"          "s" #'slime-repl-sync)
+          :desc "Clear REPL"         "c" #'sly-repl-clear-repl
+          :desc "Quit connection"    "q" #'sly-quit-lisp
+          :desc "Restart connection" "r" #'sly-restart-inferior-lisp
+          :desc "Sync REPL"          "s" #'sly-repl-sync)
          (:prefix ("s" . "stickers")
-          :desc "Toggle breaking stickers" "b" #'slime-stickers-toggle-break-on-stickers
-          :desc "Clear defun stickers"     "c" #'slime-stickers-clear-defun-stickers
-          :desc "Clear buffer stickers"    "C" #'slime-stickers-clear-buffer-stickers
-          :desc "Fetch stickers"           "f" #'slime-stickers-fetch
-          :desc "Replay stickers"          "r" #'slime-stickers-replay
-          :desc "Add/remove sticker"       "s" #'slime-stickers-dwim)
+          :desc "Toggle breaking stickers" "b" #'sly-stickers-toggle-break-on-stickers
+          :desc "Clear defun stickers"     "c" #'sly-stickers-clear-defun-stickers
+          :desc "Clear buffer stickers"    "C" #'sly-stickers-clear-buffer-stickers
+          :desc "Fetch stickers"           "f" #'sly-stickers-fetch
+          :desc "Replay stickers"          "r" #'sly-stickers-replay
+          :desc "Add/remove sticker"       "s" #'sly-stickers-dwim)
          (:prefix ("t" . "trace")
-          :desc "Toggle"         "t" #'slime-toggle-trace-fdefinition
-          :desc "Toggle (fancy)" "T" #'slime-toggle-fancy-trace
-          :desc "Untrace all"    "u" #'slime-untrace-all)))
+          :desc "Toggle"         "t" #'sly-toggle-trace-fdefinition
+          :desc "Toggle (fancy)" "T" #'sly-toggle-fancy-trace
+          :desc "Untrace all"    "u" #'sly-untrace-all)))
 
   (when (modulep! :editor evil +everywhere)
-    (add-hook 'slime-mode-hook #'evil-normalize-keymaps)))
-#+end_src
-
-*** slime-company
-
-#+begin_src emacs-lisp
-(use-package! slime-company
-  :after (slime company)
-  :init (slime-setup '(slime-fancy slime-company slime-fuzzy
-                                   slime-asdf slime-banner slime-xref-browser slime-scratch
-                                   slime-trace-dialog slime-mdot-fu))
-  :config
-  (setq slime-company-completion 'fuzzy
-        slime-company-after-completion 'slime-company-just-one-space)
-  (define-key company-active-map (kbd "\C-n") 'company-select-next)
-  (define-key company-active-map (kbd "\C-p") 'company-select-previous)
-  (define-key company-active-map (kbd "\C-d") 'company-show-doc-buffer)
-  (define-key company-active-map (kbd "M-.") 'company-show-location))
+    (add-hook 'sly-mode-hook #'evil-normalize-keymaps)))
 #+end_src
 
 ** Rust

@@ -49,14 +49,9 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
-(package! paredit)
-(package! slime)
-(package! slime-company)
-(package! sparql-mode)
-(package! vlf :recipe (:host github :repo "m00natic/vlfi" :files ("*.el")))
-(package! string-inflection :pin "c4a519be102cb99dd86be3ee8c387f008d097635")
-(package! keycast :pin "04ba7519f34421c235bac458f0192c130f732f12")
-(package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines"))
+;;;; Org Mode
+(unpin! org-roam) ; https://github.com/org-roam/org-roam-ui#installation
+(package! org-roam-ui)
 (package! org-pretty-table
   :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "87772a9469d91770f87bfa788580fca69b9e697a")
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
@@ -64,11 +59,13 @@
 (package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree")
   :pin "207c748aa5fea8626be619e8c55bdb1c16118c25")
 
-;;;; org-roam-ui
-;;;; https://github.com/org-roam/org-roam-ui#installation
-(unpin! org-roam)
-(package! org-roam-ui)
+;;;; Lisp
+(package! paredit)
+(package! sly :recipe (:host github :repo "macdavid313/sly"))
 
-;;;; osm.el - OpenStreetMap viewer for Emacs
-;;;; https://github.com/minad/osm
-(package! osm)
+;;;; Misc
+(package! sparql-mode)
+(package! vlf :recipe (:host github :repo "m00natic/vlfi" :files ("*.el")))
+(package! string-inflection :pin "c4a519be102cb99dd86be3ee8c387f008d097635")
+(package! keycast :pin "04ba7519f34421c235bac458f0192c130f732f12")
+(package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines"))
