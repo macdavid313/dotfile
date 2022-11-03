@@ -1086,7 +1086,7 @@ People at Franz tend to use =.cl= for lisp file extension.
          :n "gb" #'sly-pop-find-definition-stack)
 
         (:localleader
-         :map lisp-mode-map
+         :map (lisp-mode-map sly-mrepl-mode-map)
          :desc "sly"          "'" #'sly
          :desc "sly (ask)"    ";" (cmd!! #'sly '-)
          :desc "Expand macro" "m" #'macrostep-expand
