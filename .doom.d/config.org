@@ -1166,3 +1166,9 @@ Use [[https://github.com/microsoft/debugpy][debugpy]] as the default debugger.
 (after! dap-mode
   (setq dap-python-debugger 'debugpy))
 #+end_src
+
+#+begin_src emacs-lisp
+(lsp-register-custom-settings
+   '(("pyls.plugins.pyls_black.enabled" t t)
+     ("pyls.plugins.pyls_isort.enabled" t t)))
+#+end_src
