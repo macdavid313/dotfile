@@ -705,6 +705,17 @@ Yes, RSS feeds are still a thing. Instead of using some "AI-curated content" pla
   )
 #+end_src
 
+** bh
+BH is the Bug Handling system written in 1990, we used to store information
+about bugs and features for our products, as well as customer support
+interactions.
+
+#+begin_src emacs-lisp
+(when (file-exists-p "/usr/fi/emacs-lib/")
+  (add-to-list 'load-path "/usr/fi/emacs-lib/")
+  (require 'bh "local/bh"))
+#+end_src
+
 * Language configuration
 
 ** General
