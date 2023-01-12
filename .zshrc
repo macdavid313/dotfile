@@ -116,8 +116,8 @@ export EDITOR="emacsclient -t -a ''"
 export ALTERNATEEDITOR="vi"
 
 ### alias ###
-alias less=bat
-alias grep=rg
+[ ! -z $(command -v less) ] && alias less=bat
+[ ! -z $(command -v rg) ] && alias grep=rg
 alias emax="emacsclient -t -a ''"
 alias doom="$HOME/.emacs.d/bin/doom"
 alias config="git --git-dir=$HOME/dotfiles --work-tree=$HOME" # bare git repo alias for dotfiles
@@ -212,7 +212,7 @@ up () {
 }
 
 ### ll -> exa ###
-if [ "$(uname --operating-system)" != "Msys" ];
+if [ ! -z $(command -v exa) ]; then
 then
   alias ls='exa -al --color=always --group-directories-first' # my preferred listing
   alias la='exa -a --color=always --group-directories-first'  # all files and dirs
