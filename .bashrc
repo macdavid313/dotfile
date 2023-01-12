@@ -127,8 +127,14 @@ export EDITOR="emacsclient -t -a ''"
 export ALTERNATEEDITOR="vi"
 
 ### alias ###
-alias less=bat
-alias grep=rg
+if [ ! -z $(command -v less) ]; then
+  alias less=bat
+fi
+
+if [ ! -z $(command -v rg) ]; then
+  alias grep=rg
+fi
+
 alias emax="emacsclient -t -a ''"
 alias doom="$HOME/.emacs.d/bin/doom"
 alias config="git --git-dir=$HOME/dotfiles --work-tree=$HOME"                                       # bare git repo alias for dotfiles
@@ -223,11 +229,13 @@ up() {
 }
 
 ### ll -> exa ###
-alias ls='exa -al --color=always --group-directories-first' # my preferred listing
-alias la='exa -a --color=always --group-directories-first'  # all files and dirs
-alias ll='exa -l --color=always --group-directories-first'  # long format
-alias lt='exa -aT --color=always --group-directories-first' # tree listing
-alias l.='exa -a | egrep "^\."'
+if [ ! -z $(command -v exa) ]; then
+  alias ls='exa -al --color=always --group-directories-first' # my preferred listing
+  alias la='exa -a --color=always --group-directories-first'  # all files and dirs
+  alias ll='exa -l --color=always --group-directories-first'  # long format
+  alias lt='exa -aT --color=always --group-directories-first' # tree listing
+  alias l.='exa -a | egrep "^\."'
+fi
 
 ### adding flags ###
 alias df='df -h'     # human-readable sizes
