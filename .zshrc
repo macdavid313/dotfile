@@ -116,8 +116,14 @@ export EDITOR="emacsclient -t -a ''"
 export ALTERNATEEDITOR="vi"
 
 ### alias ###
-[ ! -z $(command -v less) ] && alias less=bat
-[ ! -z $(command -v rg) ] && alias grep=rg
+if [ ! -z $(command -v less) ]; then
+  alias less=bat
+fi
+
+if [ ! -z $(command -v rg) ]; then
+  alias grep=rg
+fi
+
 alias emax="emacsclient -t -a ''"
 alias doom="$HOME/.emacs.d/bin/doom"
 alias config="git --git-dir=$HOME/dotfiles --work-tree=$HOME" # bare git repo alias for dotfiles
