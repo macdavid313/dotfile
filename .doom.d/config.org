@@ -807,11 +807,9 @@ Babel is Org-mode's ability to execute source code within Org-mode documents.
 #+end_src
 
 **** Common Lisp
-Doom Emacs somehow configures =org-babel-lisp-eval= variable to be =sly-eval=.
-I'm changing it back to the default:
 
 #+begin_src emacs-lisp
-(setq org-babel-lisp-eval-fn 'slime-eval)
+(setq org-babel-lisp-eval-fn #'sly-eval)
 #+end_src
 
 **** Python and Jupyter
