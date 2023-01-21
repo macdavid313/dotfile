@@ -799,7 +799,6 @@ Babel is Org-mode's ability to execute source code within Org-mode documents.
    (gnuplot . t)
    (latex . t)
    (python . t)
-   (jupyter . t)
    (sh . t)
    (sql . t)
    (sqlite . t)
@@ -810,14 +809,6 @@ Babel is Org-mode's ability to execute source code within Org-mode documents.
 
 #+begin_src emacs-lisp
 (setq org-babel-lisp-eval-fn #'sly-eval)
-#+end_src
-
-**** Python and Jupyter
-
-#+begin_src emacs-lisp
-(setq org-babel-default-header-args:jupyter-python '((:async . "yes")
-                                                     (:session . "py")
-                                                     (:kernel . "python3")))
 #+end_src
 
 *** org-roam (v2)
@@ -1174,4 +1165,10 @@ Use [[https://github.com/microsoft/debugpy][debugpy]] as the default debugger.
 #+begin_src emacs-lisp
 (after! dap-mode
   (setq dap-python-debugger 'debugpy))
+#+end_src
+
+Disable poetry tracking mode
+
+#+begin_src emacs-lisp
+(setq poetry-tracking-mode nil)
 #+end_src
