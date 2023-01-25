@@ -75,7 +75,7 @@ exclusively, and I've found this combination is good enough to me:
 
 + Desktop background: =Solar Gradients=
 + Terminal theme: =Tomorrow Night Bright=
-+ Terminal font: =FiraCode Nerd Font Mono=
++ Terminal font: =JetBrainsMono Nerd Font Mono=
 + Emacs theme: =doom-xcode=
 
 #+begin_src emacs-lisp
@@ -85,8 +85,8 @@ exclusively, and I've found this combination is good enough to me:
 ** Font Face
 
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "FiraCode Nerd Font Mono" :size 16)
-      doom-big-font (font-spec :family "FiraCode Nerd Font Mono" :size 28)
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 16)
+      doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 28)
       doom-serif-font (font-spec :family "Noto Serif CJK SC"))
 #+end_src
 
