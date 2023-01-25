@@ -85,8 +85,8 @@ exclusively, and I've found this combination is good enough to me:
 ** Font Face
 
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 16)
-      doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 28)
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 13)
+      doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 24)
       doom-serif-font (font-spec :family "Noto Serif CJK SC"))
 #+end_src
 
