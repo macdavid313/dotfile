@@ -255,7 +255,7 @@ alias yta-mp3="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c --extr
 alias yta-opus="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format opus "
 alias yta-vorbis="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format vorbis "
 alias yta-wav="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format wav "
-alias ytv-best="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c -f bestvideo+bestaudio "
+alias ytv-best="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c -f bestvideo+bestaudio --merge-output-format mkv "
 
 ### Common Lisp ###
 export LISP=$HOME/lisp
