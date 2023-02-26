@@ -257,16 +257,16 @@ alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
 # receive the key of a developer
 alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
 
-### youtube-dl ###
-alias yta-aac="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format aac "
-alias yta-best="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format best "
-alias yta-flac="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format flac "
-alias yta-m4a="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format m4a "
-alias yta-mp3="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format mp3 "
-alias yta-opus="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format opus "
-alias yta-vorbis="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format vorbis "
-alias yta-wav="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format wav "
-alias ytv-best="youtube-dl -o '%(title)s.%(ext)s' --external-downloader aria2c -f bestvideo+bestaudio "
+### yt-dlp ###
+alias yta-aac="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format aac "
+alias yta-best="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format best "
+alias yta-flac="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format flac "
+alias yta-m4a="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format m4a "
+alias yta-mp3="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format mp3 "
+alias yta-opus="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format opus "
+alias yta-vorbis="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format vorbis "
+alias yta-wav="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c --extract-audio --audio-format wav "
+alias ytv-best="yt-dlp -o '%(title)s.%(ext)s' --external-downloader aria2c -f bestvideo+bestaudio "
 
 ### Common Lisp ###
 export LISP=$HOME/lisp
