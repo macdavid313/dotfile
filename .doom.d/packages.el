@@ -61,7 +61,6 @@
 
 ;;;; Lisp
 (package! paredit)
-(package! sly :recipe (:host github :repo "macdavid313/sly"))
 
 ;;;; Misc
 (package! sparql-mode)
@@ -69,4 +68,3 @@
 (package! string-inflection :pin "c4a519be102cb99dd86be3ee8c387f008d097635")
 (package! keycast :pin "04ba7519f34421c235bac458f0192c130f732f12")
 (package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines"))
-;; (package! ox-ipynb :recipe (:host github :repo "jkitchin/ox-ipynb" :files ("*.el")))
