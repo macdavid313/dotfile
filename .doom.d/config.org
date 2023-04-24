@@ -1039,7 +1039,6 @@ AllegroCL installation folder.
     (let* ((lisp-home (file-name-as-directory (getenv (if smp "ACL_SMP_HOME" "ACL_HOME")))))
       (fi:common-lisp (concat "*alisp" (if smp "-smp" "") "*")
                       fi:common-lisp-directory
-                      (getenv "PWD")
                       (concat lisp-home "alisp")
                       fi:common-lisp-image-arguments
                       fi:common-lisp-host
