@@ -61,6 +61,7 @@
 
 ;;;; Lisp
 (package! paredit)
+(package! sly :recipe (:host github :repo "joaotavora/sly" :branch "master"))
 
 ;;;; Misc
 (package! sparql-mode)

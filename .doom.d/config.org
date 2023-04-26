@@ -808,7 +808,7 @@ Babel is Org-mode's ability to execute source code within Org-mode documents.
 **** Common Lisp
 
 #+begin_src emacs-lisp :tangle no
-(setq org-babel-lisp-eval-fn #'fi:eval-in-lisp)
+(setq org-babel-lisp-eval-fn #'sly-eval)
 #+end_src
 
 *** org-roam (v2)
@@ -1009,7 +1009,7 @@ AllegroCL has its own dedicated [[https://franz.com/support/documentation/curren
 The first =cond= form tries to load /eli/ form either systemed installed site or
 AllegroCL installation folder.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (cond
  ;; load from franz workstation environment
  ((file-exists-p "/usr/fi/emacs-lib/fi/")
@@ -1068,7 +1068,7 @@ AllegroCL installation folder.
 
 *** Sly
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (use-package! sly
   :config
   (setf sly-kill-without-query-p t
