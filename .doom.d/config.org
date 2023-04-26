@@ -86,8 +86,7 @@ exclusively, and I've found this combination is good enough to me:
 
 #+begin_src emacs-lisp
 (setq doom-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 13)
-      doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 24)
-      doom-serif-font (font-spec :family "Noto Serif CJK SC"))
+      doom-big-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 24))
 #+end_src
 
 ** Open URL in a new buffer
