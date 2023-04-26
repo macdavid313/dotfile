@@ -807,7 +807,7 @@ Babel is Org-mode's ability to execute source code within Org-mode documents.
 
 **** Common Lisp
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (setq org-babel-lisp-eval-fn #'sly-eval)
 #+end_src
 
@@ -1068,7 +1068,7 @@ AllegroCL installation folder.
 
 *** Sly
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! sly
   :config
   (setf sly-kill-without-query-p t
