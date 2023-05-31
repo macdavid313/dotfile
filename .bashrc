@@ -136,7 +136,7 @@ if [ ! -z $(command -v rg) ]; then
 fi
 
 alias emax="emacsclient -t -a ''"
-alias doom="$HOME/.emacs.d/bin/doom"
+alias doom="$HOME/.config/emacs/bin/doom"
 alias config="git --git-dir=$HOME/dotfiles --work-tree=$HOME"                                       # bare git repo alias for dotfiles
 alias rr='curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash' # the terminal rickroll
 alias tb="nc termbin.com 9999"                                                                      # termbin, https://termbin.com/
