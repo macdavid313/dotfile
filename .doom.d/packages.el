@@ -50,7 +50,6 @@
 ;(unpin! t)
 
 ;;;; Org Mode
-(package! org-mode :recipe (:host github :repo "macdavid313/org-mode" :branch "main"))
 (unpin! org-roam) ; https://github.com/org-roam/org-roam-ui#installation
 (package! org-roam-ui)
 (package! org-pretty-table
