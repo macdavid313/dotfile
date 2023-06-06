@@ -306,5 +306,10 @@ if [ -d $HOME/.pyenv ]; then
   eval "$(pyenv init -)"
 fi
 
+### pipx ###
+if [ ! -z $(command -v pipx) ]; then
+  eval "$(register-python-argcomplete pipx)"
+fi
+
 ### Starship ###
 [ ! -z $(command -v starship) ] && eval "$(starship init bash)" # corss-shell prompt, https://starship.rs/

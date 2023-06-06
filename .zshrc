@@ -295,5 +295,12 @@ if [ -d $HOME/.pyenv ]; then
   eval "$(pyenv init -)"
 fi
 
+### pipx ###
+if [ ! -z $(command -v pipx) ]; then
+  autoload -U bashcompinit
+  bashcompinit
+  eval "$(register-python-argcomplete pipx)"
+fi
+
 ### load .profile if it exists ###
 [ -f $HOME/.profile ] && source $HOME/.profile
