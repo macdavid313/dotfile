@@ -20,7 +20,7 @@
        ;;layout            ; auie,ctsrnm is the superior home row
 
        :completion
-       (company +childframe)      ; the ultimate code completion backend
+       (company +childframe +tng)      ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        (ivy +childframe +prescient +icons) ; a search engine for love and life
@@ -60,7 +60,7 @@
        ;; lispy         ; vim for lisp, for people who don't like vim
        multiple-cursors                 ; editing in many places at once
        ;;objed             ; text object editing for the innocent
-       ;parinfer           ; turn lisp into python, sort of
+       ;;parinfer           ; turn lisp into python, sort of
        ;;rotate-text       ; cycle region at point between text candidates
        snippets                       ; my elves. They type so I don't have to
        word-wrap                      ; soft wrapping with language-aware indent
@@ -87,7 +87,7 @@
        ansible
        (debugger +lsp)              ; FIXME stepping through code, to help you add bugs
        direnv
-       docker
+       (docker +lsp)
        ;;editorconfig      ; let someone else argue about tabs vs spaces
        ein                   ; tame Jupyter notebooks with emacs
        (eval +overlay)       ; run code, run (also, repls)
@@ -112,7 +112,7 @@
 
        :lang
        ;;agda              ; types of types of types of types...
-       ;;cc    ; C/C++/Obj-C madness
+       (cc +tree-sitter)    ; C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
@@ -133,17 +133,17 @@
        ;;(haskell +dante)  ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
-       json                        ; At least it ain't XML
-       ;;(java +meghanada)           ; the poster child for carpal tunnel syndrome
+       (json +tree-sitter)                        ; At least it ain't XML
+       (java +tree-sitter)           ; the poster child for carpal tunnel syndrome
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
-       latex          ; writing papers in Emacs has never been so fun
+       ;;latex          ; writing papers in Emacs has never been so fun
        ;;lean
        ;;factor
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
-       markdown          ; writing docs for people to ignore
+       (markdown +grip)          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
@@ -151,23 +151,23 @@
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       (python +conda +cython +lsp +pyright +poetry +pyenv +tree-sitter)          ; beautiful is better than ugly
+       (python +cython +lsp +pyright +pyenv +tree-sitter)          ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6
-       ;;rest              ; Emacs as a REST client
+       (rest +jq)              ; Emacs as a REST client
        ;;rst               ; ReST in peace
        ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
-       (rust +lsp)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+       (rust +lsp +tree-sitter)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        ;;scala             ; java, but good
        ;;scheme            ; a fully conniving family of lisps
-       sh     ; she sells {ba,z,fi}sh shells on the C xor
+       (sh +tree-sitter)     ; she sells {ba,z,fi}sh shells on the C xor
        ;;sml
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
-       web                              ; the tubes
-       yaml                             ; JSON, but readable
+       (web  +tree-sitter)                              ; the tubes
+       (yaml +tree-sitter)                             ; JSON, but readable
 
        :email
        ;;(mu4e +gmail)
