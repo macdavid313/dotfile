@@ -12,13 +12,15 @@
 *** [[https://rustcc.cn/rss][Rust.cc]] :rust:forum:
 *** [[http://planet.lisp.org/rss20.xml][Planet Lisp]] :lisp:
 *** [[http://www.scheme.dk/planet/atom.xml][Planet Scheme]] :scheme:
-*** [[http://planetrdf.com/index.rdf][Planet RDF]] :rdf:
+*** [[http://planetrdf.com/index.rdf][Planet RDF]] :rdf:owl:kg:
 *** [[https://blog.tecosaur.com/tmio/rss.xml][This Month in Org]] :orgmode:
 ** News :news:
 *** [[http://rss.slashdot.org/Slashdot/slashdotMain][Slashdot]] :slashdot:
 *** [[https://www.solidot.org/index.rss][Solidot]] :solidot:
 *** [[https://feed.infoq.com/][Infoq]] :infoq:
-*** [[http://www.infoq.com/cn/feed][InfoQ CN]] :infoqCN:
+*** [[https://sspai.com/feed][少数派]] :sspai:
+*** [[https://cn.nytimes.com/rss/][纽约时报中文网]] :nytimes:
+*** [[https://www.economist.com/rss][The Economist]] :economist:
 *** Hacker News :hackernews:
 **** [[https://hnrss.org/frontpage][Front page]]
 **** [[https://hnrss.org/jobs][Job feeds]]
@@ -28,19 +30,10 @@
 *** InfoWorld :infoworld:
 **** [[https://www.infoworld.com/news/index.rss][News]]
 **** [[https://www.infoworld.com/blog/all/index.rss][Blogs]] :blog:
-*** Reddit :reddit:
-**** [[https://www.reddit.com/r/emacs.rss][emacs]] :emacs:
-**** [[https://www.reddit.com/r/algorithms.rss][algorithms]] :algorithm:
-**** [[https://www.reddit.com/r/Common_Lisp.rss][Common_Lisp]] :lisp:
-**** [[https://www.reddit.com/r/lisp.rss][lisp]] :lisp:
-**** [[https://www.reddit.com/r/rust.rss][rust]] :rust:
-**** [[https://www.reddit.com/r/commandline.rss][Command Line]] :programming:
-**** [[https://www.reddit.com/r/linux.rss][linux]] :linux:
-**** [[https://www.reddit.com/r/orgmode.rss][Org-mode]] :emacs:orgmode:
 ** Blog :blog:
 *** [[https://aloso.github.io/feed.xml][Aloso’s blog]] :rust:
 *** [[https://matklad.github.io//feed.xml][matklad]] :rust:
-*** [[http://www.kawabangga.com/feed][卡瓦邦噶！]] :devops:赖信涛:
+*** [[http://www.kawabangga.com/feed][卡瓦邦噶！]] :devops:
 *** [[https://bernsteinbear.com/feed.xml][Max Bernstein's Blog]]
 *** [[https://matthewbauer.us/blog/feed.xml][Matthew Bauer’s Blog]]
 *** [[https://takeonrules.com/index.xml][Take on Rules]] :emacs:
@@ -48,7 +41,16 @@
 *** [[http://www.salttiger.com/index.php/feed/][SaltTiger]] :ebook:
 *** [[http://lisp-univ-etc.blogspot.com/feeds/posts/default][Lisp, the Universe and Everything]] :lisp:
 *** [[https://nl.movim.eu/?feed/phoe%40movim.eu][Michał "phoe" Herda’s feed]] :lisp:
-*** [[http://douroucouli.wordpress.com/feed/][Monkeying around with OWL]] :rdf:owl:
-*** [[http://bobdc.com/blog/atom.xml][bobdc blog]] :rdf:
+*** [[http://douroucouli.wordpress.com/feed/][Monkeying around with OWL]] :rdf:owl:kg:
+*** [[http://bobdc.com/blog/atom.xml][bobdc blog]] :rdf:owl:kg:
 ** Emacs China :emacs:
 *** [[https://emacs-china.org/latest.rss][最新主题]] :forum:
+** Reddit :reddit:
+*** [[https://www.reddit.com/r/emacs.rss][emacs]] :emacs:
+*** [[https://www.reddit.com/r/algorithms.rss][algorithms]] :algorithm:
+*** [[https://www.reddit.com/r/Common_Lisp.rss][Common_Lisp]] :lisp:
+*** [[https://www.reddit.com/r/lisp.rss][lisp]] :lisp:
+*** [[https://www.reddit.com/r/rust.rss][rust]] :rust:
+*** [[https://www.reddit.com/r/commandline.rss][Command Line]] :programming:
+*** [[https://www.reddit.com/r/linux.rss][linux]] :linux:
+*** [[https://www.reddit.com/r/orgmode.rss][Org-mode]] :emacs:orgmode:
