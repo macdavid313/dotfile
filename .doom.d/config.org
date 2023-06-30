@@ -860,14 +860,14 @@ You may also choose to use neato in place of dot, which generates a more compact
   (concat
    (pcase org-journal-file-type
      (`daily "#+TITLE: Daily Journal\n#+STARTUP: showeverything")
-     (`weekly "#+TITLE: 周记 (Weekly Journal)\n#+STARTUP: folded") ; <- currently using weekly
+     (`weekly "#+TITLE: Weekly Journal\n#+STARTUP: folded") ; <- currently using weekly
      (`monthly "#+TITLE: Monthly Journal\n#+STARTUP: folded")
      (`yearly "#+TITLE: Yearly Journal\n#+STARTUP: folded"))))
 
 (after! org-journal
   (setq org-journal-dir "~/org/journal"
         org-journal-file-format "%Y-%m-%d.org"
-        org-journal-file-header 'org-journal-file-header-fun))
+        org-journal-file-header 'org-journal-file-header-func))
 #+end_src
 
 *** Agenda
