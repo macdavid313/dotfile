@@ -1102,6 +1102,12 @@ AllegroCL installation folder.
                            `(,lisp ,(remove nil
                                             `(,(getenv env) ,@(when quicklisp-setup-path `("-L" ,quicklisp-setup-path)))))))
 
+  (cl-loop for (lisp . env)
+           in '((agdev . "AGDEV_MLISP") (agdev-smp . "AGDEV_MLISP_SMP"))
+           when (getenv env)
+           do (add-to-list 'sly-lisp-implementations
+                           `(,lisp (,(getenv env)))))
+
   (when (getenv "LISP")
     (let* ((lisp-home (file-name-as-directory (getenv "LISP")))
            (sbcl (concat lisp-home "sbcl/bin/sbcl"))

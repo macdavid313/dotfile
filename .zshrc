@@ -288,6 +288,21 @@ do
   fi
 done
 
+## These are set for working with AllegroGraph Development ##
+if [ -d $LISP/agdev-linuxamd64.64 ]; then
+  export AGDEV_MLISP=$LISP/agdev-linuxamd64.64/mlisp
+  alias agdev-repl="rlwrap ${AGDEV_MLISP}"
+fi
+
+if [ -d $LISP/agdev-linuxamd64.64smp ]; then
+  export AGDEV_MLISP_SMP=$LISP/agdev-linuxamd64.64smp/mlisp
+  alias agdev-smp-repl="rlwrap ${AGDEV_MLISP_SMP}"
+fi
+
+if [ -d $HOME/projects/franz/scm-bin ]; then
+  export PATH=$HOME/projects/franz/scm-bin:$PATH
+fi
+
 ### pyenv ###
 if [ -d $HOME/.pyenv ]; then
   export PYENV_ROOT=$HOME/.pyenv
