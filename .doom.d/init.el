@@ -134,7 +134,7 @@
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
        (json +tree-sitter)                        ; At least it ain't XML
-       (java +tree-sitter)           ; the poster child for carpal tunnel syndrome
+       ;;(java +tree-sitter)           ; the poster child for carpal tunnel syndrome
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
@@ -143,7 +143,7 @@
        ;;factor
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
-       (markdown +grip)          ; writing docs for people to ignore
+       markdown          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
@@ -177,7 +177,7 @@
        :app
        ;;calendar
        ;;irc               ; how neckbeards socialize
-       (rss +org)                       ; emacs as an RSS reader
+       ;;(rss +org)                       ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
 
        :config
